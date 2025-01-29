@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings 
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 class Course(models.Model):
     name = models.CharField(max_length=100)
@@ -11,12 +11,19 @@ class Course(models.Model):
     days = models.CharField(max_length=50)  # Format like "Mon, Wed, Fri"
     
     start_time = models.TimeField()
-    end_time = models.TimeField(default=(start_time + timedelta(hours=1)))
+    end_time = models.TimeField()  # Leave this without a default now
     
     exam_datetime = models.DateTimeField()  # DateTime of the final exam
 
     # Set a unique related_name for this app's course
     student = models.ForeignKey('registration.CustomUser', on_delete=models.CASCADE, related_name='management_courses')
+
+    def save(self, *args, **kwargs):
+        if not self.end_time:  # Only set end_time if it is not already set
+            # Default end_time as 1 hour after start_time
+            start_datetime = datetime.combine(datetime.min, self.start_time)  # Use a "zero" date
+            self.end_time = (start_datetime + timedelta(hours=1)).time()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.name} ({self.code})"
