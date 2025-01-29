@@ -1,5 +1,5 @@
 from django.db import models
-from django.conf import settings  # Import settings to reference CustomUser
+from django.conf import settings  
 
 class Course(models.Model):
     name = models.CharField(max_length=100)
@@ -9,14 +9,13 @@ class Course(models.Model):
     instructor = models.CharField(max_length=100)
     days = models.CharField(max_length=50)  # Format like "Mon, Wed, Fri"
     
-    # More precise time fields
     start_time = models.TimeField()
     end_time = models.TimeField()
     
     exam_datetime = models.DateTimeField()  # DateTime of the final exam
 
-    # Link to CustomUser instead of Student
-    student = models.ForeignKey('registration.CustomUser', on_delete=models.CASCADE, related_name='courses')
+    # Set a unique related_name for this app's course
+    student = models.ForeignKey('registration.CustomUser', on_delete=models.CASCADE, related_name='management_courses')
 
     def __str__(self):
         return f"{self.name} ({self.code})"
