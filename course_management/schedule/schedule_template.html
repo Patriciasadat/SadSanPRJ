@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/schedule.css' %}">
+    <title>Weekly Schedule</title>
+</head>
+<body>
+    <h1>Your Weekly Schedule</h1>
+    <div class="schedule">
+        {% for day, courses in schedule.items %}
+            <div class="day">
+                <h2>{{ day }}</h2>
+                <ul>
+                    {% for course in courses %}
+                        <li>{{ course.name }}: {{ course.start_time }} - {{ course.end_time }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
