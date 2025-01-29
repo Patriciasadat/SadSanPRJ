@@ -10,7 +10,7 @@ class Course(models.Model):
     instructor = models.CharField(max_length=100)
     days = models.CharField(max_length=50)  # Format like "Mon, Wed, Fri"
     
-    start_time = models.TimeField()
+    start_time = models.TimeField(null=True)
     end_time = models.TimeField(null=True)  # Make end_time nullable
 
     
