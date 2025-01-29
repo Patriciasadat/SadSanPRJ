@@ -16,7 +16,7 @@ class Course(models.Model):
     exam_datetime = models.DateTimeField()  # DateTime of the final exam
 
     # Link to CustomUser instead of Student
-    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="courses", null=True, blank=True)
+    student = models.ForeignKey('registration.CustomUser', on_delete=models.CASCADE, related_name='courses')
 
     def __str__(self):
         return f"{self.name} ({self.code})"
