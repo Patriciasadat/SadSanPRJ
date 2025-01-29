@@ -9,17 +9,26 @@
 </head>
 <body>
     <h1>Your Weekly Schedule</h1>
-    <div class="schedule">
-        {% for day, courses in schedule.items %}
-            <div class="day">
-                <h2>{{ day }}</h2>
-                <ul>
-                    {% for course in courses %}
-                        <li>{{ course.name }}: {{ course.start_time }} - {{ course.end_time }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endfor %}
-    </div>
+    
+    {% if schedule %}
+        <div class="schedule">
+            {% for day, courses in schedule.items %}
+                <div class="day">
+                    <h2>{{ day }}</h2>
+                    <ul>
+                        {% for course in courses %}
+                            <li>
+                                <strong>{{ course.name }}</strong>  
+                                <br> 🕒 {{ course.start_time|time:"h:i A" }} - {{ course.end_time|time:"h:i A" }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No courses scheduled yet.</p>
+    {% endif %}
+    
 </body>
 </html>
