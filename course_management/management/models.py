@@ -17,7 +17,7 @@ class Course(models.Model):
     exam_datetime = models.DateTimeField()  # DateTime of the final exam
 
     # Set a unique related_name for this app's course
-    student = models.ForeignKey('registration.CustomUser', on_delete=models.CASCADE, related_name='management_courses')
+    student = models.ForeignKey('registration.CustomUser', on_delete=models.CASCADE, related_name='management_courses', null=True)
 
     def save(self, *args, **kwargs):
         if not self.end_time:  # Only set end_time if it is not already set
