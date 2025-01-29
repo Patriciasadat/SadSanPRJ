@@ -1,0 +1,26 @@
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const isAdminCheckbox = document.getElementById("id_is_admin");
+    const studentIdField = document.getElementById("id_student_id").parentElement;
+    const adminCodeField = document.getElementById("id_admin_code").parentElement;
+
+    function toggleFields() {
+        if (isAdminCheckbox.checked) {
+            studentIdField.style.display = "none";
+            adminCodeField.style.display = "block";
+        } else {
+            studentIdField.style.display = "block";
+            adminCodeField.style.display = "none";
+        }
+    }
+
+    isAdminCheckbox.addEventListener("change", toggleFields);
+    toggleFields();  // Call on page load in case of pre-filled form
+});
+</script>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Register</button>
+</form>

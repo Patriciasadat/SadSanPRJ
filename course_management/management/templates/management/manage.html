@@ -1,0 +1,230 @@
+<h1>Manage Courses</h1>
+
+<!-- Basic page styles -->
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        padding: 20px;
+    }
+
+    h1 {
+        color: #333;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    table th, table td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    table th {
+        background-color: #f4f4f4;
+    }
+
+    .btn {
+        padding: 8px 15px;
+        margin: 5px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    /* Edit button - Blue */
+    .btn-primary {
+        background-color: #007bff;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;  /* Darker blue when hovered */
+        transform: scale(1.05);      /* Slight zoom effect */
+    }
+
+    /* Delete button - Red */
+    .btn-danger {
+        background-color: #dc3545;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333;  /* Darker red when hovered */
+        transform: scale(1.05);      /* Slight zoom effect */
+    }
+
+    /* Secondary button - Grey */
+    .btn-secondary {
+        background-color: #6c757d;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;  /* Darker grey when hovered */
+        transform: scale(1.05);      /* Slight zoom effect */
+    }
+
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4); /* Black background with transparency */
+    }
+
+    .modal-dialog {
+        position: relative;
+        margin: 15% auto;
+        background-color: #fff;
+        padding: 20px;
+        width: 80%;
+        max-width: 500px;
+        border-radius: 8px;
+    }
+
+    .modal-header, .modal-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .modal-footer button {
+        padding: 8px 15px;
+    }
+
+    .modal-header h5 {
+        margin: 0;
+    }
+
+    .modal-body {
+        margin-top: 10px;
+        margin-bottom: 20px;
+        font-size: 16px;
+    }
+
+    .close {
+        font-size: 1.5em;
+        color: #aaa;
+        background: none;
+        border: none;
+    }
+
+    .close:hover {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    /* When the modal is shown */
+    .modal.show {
+        display: block;
+    }
+</style>
+
+{% if messages %}
+  <ul>
+    {% for message in messages %}
+      <li class="{{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+<h2>Courses</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Code</th>
+            <th>Units</th>
+            <th>Department</th>
+            <th>Instructor</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for course in courses %}
+        <tr>
+            <td>{{ course.name }}</td>
+            <td>{{ course.code }}</td>
+            <td>{{ course.units }}</td>
+            <td>{{ course.department }}</td>
+            <td>{{ course.instructor }}</td>
+            <td>
+                <!-- Edit Button (Triggers Edit Modal) -->
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ course.id }}">Edit</button>
+
+                <!-- Delete Button (Triggers Delete Modal) -->
+                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ course.id }}">Delete</button>
+
+                <!-- Modal for confirmation (Delete) -->
+                <div class="modal" id="deleteModal{{ course.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel{{ course.id }}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteModalLabel{{ course.id }}">Confirm Deletion</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to delete the course "{{ course.name }}"? This action cannot be undone.
+                            </div>
+                            <div class="modal-footer">
+                                <!-- Form to confirm deletion -->
+                                <form method="POST" action="{% url 'delete_course' course.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                                </form>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal for Editing Course -->
+                <div class="modal" id="editModal{{ course.id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel{{ course.id }}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLabel{{ course.id }}">Edit Course: {{ course.name }}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST" action="{% url 'edit_course' course.id %}">
+                                    {% csrf_token %}
+                                    {{ form.as_p }}
+                                    <button type="submit" class="btn btn-success">Update Course</button>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3>Add New Course</h3>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Course</button>
+</form>
+
+<!-- Include Bootstrap JS and jQuery for Modal functionality -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
