@@ -11,7 +11,8 @@ class Course(models.Model):
     days = models.CharField(max_length=50)  # Format like "Mon, Wed, Fri"
     
     start_time = models.TimeField()
-    end_time = models.TimeField()  # Leave this without a default now
+    end_time = models.TimeField(null=True)  # Make end_time nullable
+
     
     exam_datetime = models.DateTimeField()  # DateTime of the final exam
 
