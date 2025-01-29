@@ -1,5 +1,6 @@
 from django.db import models
-from django.conf import settings  
+from django.conf import settings 
+from datetime import timedelta
 
 class Course(models.Model):
     name = models.CharField(max_length=100)
@@ -10,7 +11,7 @@ class Course(models.Model):
     days = models.CharField(max_length=50)  # Format like "Mon, Wed, Fri"
     
     start_time = models.TimeField()
-    end_time = models.TimeField()
+    end_time = models.TimeField(default=(start_time + timedelta(hours=1)))
     
     exam_datetime = models.DateTimeField()  # DateTime of the final exam
 
