@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from .models import Course
+from management.models import Course  # Adjust the import according to where it's defined
+
 
 def weekly_schedule(request):
     if not request.user.is_authenticated:
