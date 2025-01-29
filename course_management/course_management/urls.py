@@ -16,10 +16,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.shortcuts import render
+
+def home(request):
+    return render(request, 'home.html')  # This will load the home.html template from templates folder
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("registration/", include("registration.urls")),
     path("management/", include("management.urls")),
-    path("schedule/", include("schedule.urls"))
+    path("schedule/", include("schedule.urls")),
+    path('', home, name='home')
 ]
+
+    
