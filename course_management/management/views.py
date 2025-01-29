@@ -15,13 +15,15 @@ def manage_courses(request):
     if request.method == 'POST':
         form = CourseForm(request.POST)
         if form.is_valid():
-            form.save()
+            # Automatically assign the current admin as the course's student
+            course = form.save(commit=False)
+            course.student = request.user  # Make sure the logged-in user is the student
+            course.save()
             messages.success(request, "Course added successfully!")
             return redirect('manage_courses')
     else:
         form = CourseForm()
 
-    # Update template path
     return render(request, 'management/manage.html', {'form': form, 'courses': courses})
 
 @login_required
@@ -38,7 +40,6 @@ def edit_course(request, course_id):
         messages.success(request, "Course updated successfully!")
         return redirect('manage_courses')
 
-    # Update template path
     return render(request, 'management/edit_course.html', {'form': form, 'course': course})
 
 @login_required
