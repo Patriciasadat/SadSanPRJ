@@ -1,6 +1,5 @@
 from django.db import models
-from django.db import models
-from django.conf import settings
+from django.conf import settings  # Import settings to reference CustomUser
 
 class Course(models.Model):
     name = models.CharField(max_length=100)
@@ -8,11 +7,16 @@ class Course(models.Model):
     units = models.IntegerField(choices=[(i, str(i)) for i in range(5)])  # 0-4 units
     department = models.CharField(max_length=100)
     instructor = models.CharField(max_length=100)
-    days = models.CharField(max_length=50)  # Can store days in a format like "Mon, Wed, Fri"
-    time = models.CharField(max_length=50)  # Store time, e.g., "10:00 AM - 12:00 PM"
+    days = models.CharField(max_length=50)  # Format like "Mon, Wed, Fri"
+    
+    # More precise time fields
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    
     exam_datetime = models.DateTimeField()  # DateTime of the final exam
 
-    def __str__(self):
-        return self.name
+    # Link to CustomUser instead of Student
+    student = models.ForeignKey('registration.CustomUser', on_delete=models.CASCADE, related_name='courses')
 
-# Create your models here.
+    def __str__(self):
+        return f"{self.name} ({self.code})"
