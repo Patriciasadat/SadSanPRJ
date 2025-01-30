@@ -22,10 +22,7 @@ def register(request):
 class CustomLoginView(LoginView):
     template_name = "registration/login.html"
 
-class CustomLogoutView(LogoutView):
-    template_name = "registration/logout.html"
 
 urlpatterns = [
-    path("login/", CustomLoginView.as_view(), name="login"),
-    path("logout/", CustomLogoutView.as_view(), name="logout"),
+    path("login/", CustomLoginView.as_view(), name="login")
 ]
