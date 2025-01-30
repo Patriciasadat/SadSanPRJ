@@ -131,3 +131,4 @@ AUTH_USER_MODEL = 'registration.CustomUser'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',  # Ensure static files in the 'static' directory are accessible
 ]
+LOGIN_REDIRECT_URL = '/'  # Redirect to home page after login
