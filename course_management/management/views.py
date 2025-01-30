@@ -8,7 +8,7 @@ from .forms import CourseForm
 def manage_courses(request):
     if not request.user.is_admin:
         messages.error(request, "You don't have permission to view this page.")
-        return redirect('home')
+        return redirect('home')  # No change needed for this line
 
     courses = Course.objects.all()
 
@@ -23,11 +23,11 @@ def manage_courses(request):
             # Ensure course capacity is set correctly
             if course.capacity < 1:
                 messages.error(request, "Capacity must be at least 1.")
-                return redirect('manage_courses')
+                return redirect('management:manage_courses')  # Updated to namespaced URL
 
             course.save()
             messages.success(request, "Course added successfully!")
-            return redirect('manage_courses')
+            return redirect('management:manage_courses')  # Updated to namespaced URL
     else:
         form = CourseForm()
 
@@ -38,7 +38,7 @@ def manage_courses(request):
 def edit_course(request, course_id):
     if not request.user.is_admin:
         messages.error(request, "You don't have permission to edit courses.")
-        return redirect('home')
+        return redirect('home')  # No change needed for this line
 
     course = get_object_or_404(Course, id=course_id)
     form = CourseForm(request.POST or None, instance=course)
@@ -50,11 +50,11 @@ def edit_course(request, course_id):
         enrolled_students_count = course.enrolled_students.count()
         if updated_course.capacity < enrolled_students_count:
             messages.error(request, f"Cannot set capacity below the {enrolled_students_count} enrolled students.")
-            return redirect('manage_courses')
+            return redirect('management:manage_courses')  # Updated to namespaced URL
 
         updated_course.save()
         messages.success(request, "Course updated successfully!")
-        return redirect('manage_courses')
+        return redirect('management:manage_courses')  # Updated to namespaced URL
 
     return render(request, 'management/edit_course.html', {'form': form, 'course': course})
 
@@ -63,18 +63,18 @@ def edit_course(request, course_id):
 def delete_course(request, course_id):
     if not request.user.is_admin:
         messages.error(request, "You don't have permission to delete courses.")
-        return redirect('home')
+        return redirect('home')  # No change needed for this line
 
     course = get_object_or_404(Course, id=course_id)
 
     # Prevent deleting courses with enrolled students
     if course.enrolled_students.exists():
         messages.error(request, "Cannot delete a course with enrolled students. Remove students first.")
-        return redirect('manage_courses')
+        return redirect('management:manage_courses')  # Updated to namespaced URL
 
     course.delete()
     messages.success(request, "Course deleted successfully!")
-    return redirect('manage_courses')
+    return redirect('management:manage_courses')  # Updated to namespaced URL
 
 
 @login_required
@@ -82,7 +82,7 @@ def view_students(request, course_id):
     """ View enrolled students for a specific course """
     if not request.user.is_admin:
         messages.error(request, "You don't have permission to view this page.")
-        return redirect('home')
+        return redirect('home')  # No change needed for this line
 
     course = get_object_or_404(Course, id=course_id)
     students = course.enrolled_students.all()
