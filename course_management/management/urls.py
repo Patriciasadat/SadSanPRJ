@@ -1,7 +1,7 @@
-# urls.py
-
 from django.urls import path
 from . import views
+
+app_name = 'management'  # This sets the namespace for this app
 
 urlpatterns = [
     path('manage/', views.manage_courses, name='manage_courses'),
