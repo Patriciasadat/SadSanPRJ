@@ -8,6 +8,5 @@ app_name = 'registration'  # Add a namespace for this app
 
 urlpatterns = [
     path("register/", register, name="register"),
-    path("login/", LoginView.as_view(template_name="login.html"), name="login"),
-    path("logout/", LogoutView.as_view(), name="logout"),  # Added logout URL
+    path("login/", LoginView.as_view(template_name="login.html"), name="login")
 ]
