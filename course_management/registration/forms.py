@@ -21,29 +21,6 @@ def national_code_checker(string):
     if not valid:
         raise ValidationError("Invalid National ID.")
 
-from django import forms
-from django.contrib.auth.forms import UserCreationForm
-from .models import CustomUser
-from django.core.exceptions import ValidationError
-
-# National ID validation function
-def national_code_checker(string):
-    if not string.isdigit() or len(string) != 10:  # Ensure it's exactly 10 digits
-        raise ValidationError("National ID must be a 10-digit number.")
-
-    total = sum(int(string[i]) * (len(string) - i) for i in range(len(string) - 1))
-    
-    check_digit = int(string[-1])
-    remainder = total % 11
-    
-    if remainder < 2:
-        valid = check_digit == remainder
-    else:
-        valid = check_digit == (11 - remainder)
-    
-    if not valid:
-        raise ValidationError("Invalid National ID.")
-
 class CustomUserForm(UserCreationForm):
     phone_number = forms.CharField(max_length=15, required=True)
     national_id = forms.CharField(max_length=10, required=True)
