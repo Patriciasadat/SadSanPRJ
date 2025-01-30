@@ -64,6 +64,22 @@
         transform: scale(1.05);
     }
 
+    .btn-home {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        display: inline-block;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-home:hover {
+        background-color: #218838;
+    }
+
     .modal {
         display: none;
         position: fixed;
@@ -107,22 +123,22 @@
     }
 
     .btn-close {
-        font-size: 2em; /* Make it larger */
-        color: #333; /* Dark color for visibility */
+        font-size: 2em;
+        color: #333;
         background: none;
         border: none;
-        opacity: 1; /* Fully opaque */
+        opacity: 1;
         position: absolute;
         right: 10px;
         top: 10px;
-        width: 30px; /* Increase the width */
-        height: 30px; /* Increase the height */
+        width: 30px;
+        height: 30px;
         display: flex;
         justify-content: center;
         align-items: center;
-        border-radius: 50%; /* Circular shape */
-        background-color: rgba(0, 0, 0, 0.2); /* Slight background for visibility */
-        cursor: pointer; /* Show pointer cursor */
+        border-radius: 50%;
+        background-color: rgba(0, 0, 0, 0.2);
+        cursor: pointer;
     }
 
     .btn-close::before, .btn-close::after {
@@ -130,35 +146,34 @@
         position: absolute;
         top: 50%;
         left: 50%;
-        width: 18px; /* Thickness of the lines */
-        height: 2px; /* Thickness of the lines */
-        background-color: #333; /* Dark color for visibility */
-        transform: translate(-50%, -50%); /* Center the lines */
+        width: 18px;
+        height: 2px;
+        background-color: #333;
+        transform: translate(-50%, -50%);
     }
 
     .btn-close::before {
-        transform: translate(-50%, -50%) rotate(45deg); /* Rotate for diagonal line */
+        transform: translate(-50%, -50%) rotate(45deg);
     }
 
     .btn-close::after {
-        transform: translate(-50%, -50%) rotate(-45deg); /* Rotate for the other diagonal line */
+        transform: translate(-50%, -50%) rotate(-45deg);
     }
 
     .btn-close:hover {
-        color: #fff; /* White color on hover */
-        background-color: #000; /* Dark background on hover */
-        opacity: 1; /* Ensure it's fully visible on hover */
+        color: #fff;
+        background-color: #000;
+        opacity: 1;
     }
 
     .btn-close:focus {
-        outline: none; /* Remove outline when focused */
+        outline: none;
     }
 
     .modal.show {
         display: block;
     }
 
-    /* Move "Add New Course" button to the top right */
     .add-course-container {
         display: flex;
         justify-content: flex-end;
@@ -166,7 +181,10 @@
     }
 </style>
 
-<!-- Add New Course Button (Top Right) -->
+<!-- Back to Home Button -->
+<a href="{% url 'home' %}" class="btn btn-home">Back to Home</a>
+
+<!-- Add New Course Button -->
 <div class="add-course-container">
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCourseModal">
         Add Course
@@ -179,11 +197,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addCourseModalLabel">Add New Course</h5>
-                <!-- Close Button for the modal -->
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="POST" action="{% url 'manage_courses' %}">
+                <form method="POST" action="{% url 'management:manage_courses' %}">
                     {% csrf_token %}
                     {{ form.as_p }}
                     <button type="submit" class="btn btn-success">Add Course</button>
@@ -258,11 +275,10 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Edit Course: {{ course.name }}</h5>
-                        <!-- Close Button for the modal -->
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form method="POST" action="{% url 'edit_course' course.id %}">
+                        <form method="POST" action="{% url 'management:edit_course' course.id %}">
                             {% csrf_token %}
                             {{ form.as_p }}
                             <button type="submit" class="btn btn-success">Update Course</button>
@@ -278,14 +294,13 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Confirm Deletion</h5>
-                        <!-- Close Button for the modal -->
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         Are you sure you want to delete the course "{{ course.name }}"? This action cannot be undone.
                     </div>
                     <div class="modal-footer">
-                        <form method="POST" action="{% url 'delete_course' course.id %}">
+                        <form method="POST" action="{% url 'management:delete_course' course.id %}">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger">Yes, Delete</button>
                         </form>
