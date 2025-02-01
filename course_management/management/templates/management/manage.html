@@ -14,6 +14,16 @@
 <!-- Back to Home Button -->
 <a href="{% url 'home' %}" class="btn btn-primary btn-home">Back to Home</a>
 
+<!-- Search Bar -->
+<div class="mb-3">
+    <form method="GET" action="{% url 'management:manage_courses' %}">
+        <div class="input-group">
+            <input type="text" class="form-control" name="search" placeholder="Search for a course" value="{{ request.GET.search }}">
+            <button class="btn btn-primary" type="submit">Search</button>
+        </div>
+    </form>
+</div>
+
 <!-- Add New Course Button -->
 <div class="add-course-container">
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
@@ -34,7 +44,7 @@
                     {% csrf_token %}
                     {{ form.as_p }}
 
-                    <!-- Date and Time Pickers -->
+                    <!-- Only the time picker fields for start time, end time, and exam datetime -->
                     <div class="mb-3">
                         <label for="id_start_time" class="form-label">Start Time</label>
                         <input type="time" id="id_start_time" name="start_time" class="form-control" required>
@@ -67,6 +77,7 @@
             <th>Department</th>
             <th>Instructor</th>
             <th>Capacity</th>
+            <th>Days</th> <!-- Added Days Column -->
             <th>Actions</th>
         </tr>
     </thead>
@@ -85,6 +96,9 @@
                     {{ course.remaining_capacity }}/{{ course.capacity }}
                 </a>
             </td>
+
+            <!-- Days Column -->
+            <td>{{ course.days }}</td>  <!-- New column for days -->
 
             <td>
                 <!-- Edit Button (PATCH) -->
@@ -119,67 +133,66 @@
         </div>
 
         <!-- Edit Course Modal (PATCH Method) -->
-<div class="modal fade" id="editModal{{ course.id }}" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Edit Course: {{ course.name }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="POST" action="{% url 'management:edit_course' course.id %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="_method" value="PATCH">  <!-- PATCH method -->
+        <div class="modal fade" id="editModal{{ course.id }}" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Course: {{ course.name }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action="{% url 'management:edit_course' course.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="_method" value="PATCH">  <!-- PATCH method -->
 
-                    <!-- Manually filling out the fields from the CourseForm -->
-                    <div class="mb-3">
-                        <label for="course_name" class="form-label">Course Name</label>
-                        <input type="text" class="form-control" id="course_name" name="name" value="{{ course.name }}">
-                    </div>
-                    <div class="mb-3">
-                        <label for="course_code" class="form-label">Course Code</label>
-                        <input type="text" class="form-control" id="course_code" name="code" value="{{ course.code }}">
-                    </div>
-                    <div class="mb-3">
-                        <label for="course_units" class="form-label">Units</label>
-                        <input type="number" class="form-control" id="course_units" name="units" value="{{ course.units }}">
-                    </div>
-                    <div class="mb-3">
-                        <label for="course_department" class="form-label">Department</label>
-                        <input type="text" class="form-control" id="course_department" name="department" value="{{ course.department }}">
-                    </div>
-                    <div class="mb-3">
-                        <label for="course_instructor" class="form-label">Instructor</label>
-                        <input type="text" class="form-control" id="course_instructor" name="instructor" value="{{ course.instructor }}">
-                    </div>
-                    <div class="mb-3">
-                        <label for="course_days" class="form-label">Days</label>
-                        <input type="text" class="form-control" id="course_days" name="days" value="{{ course.days }}">
-                    </div>
-                    <div class="mb-3">
-                        <label for="course_start_time" class="form-label">Start Time</label>
-                        <input type="time" class="form-control" id="course_start_time" name="start_time" value="{{ course.start_time|time:"H:i" }}">
-                    </div>
-                    <div class="mb-3">
-                        <label for="course_end_time" class="form-label">End Time</label>
-                        <input type="time" class="form-control" id="course_end_time" name="end_time" value="{{ course.end_time|time:"H:i" }}">
-                    </div>
-                    <div class="mb-3">
-                        <label for="course_exam_datetime" class="form-label">Exam Date & Time</label>
-                        <input type="datetime-local" class="form-control" id="course_exam_datetime" name="exam_datetime" value="{{ course.exam_datetime|date:"Y-m-d\TH:i" }}">
-                    </div>
-                    <div class="mb-3">
-                        <label for="course_capacity" class="form-label">Capacity</label>
-                        <input type="number" class="form-control" id="course_capacity" name="capacity" value="{{ course.capacity }}">
-                    </div>
+                            <!-- Manually filling out the fields from the CourseForm -->
+                            <div class="mb-3">
+                                <label for="course_name" class="form-label">Course Name</label>
+                                <input type="text" class="form-control" id="course_name" name="name" value="{{ course.name }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="course_code" class="form-label">Course Code</label>
+                                <input type="text" class="form-control" id="course_code" name="code" value="{{ course.code }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="course_units" class="form-label">Units</label>
+                                <input type="number" class="form-control" id="course_units" name="units" value="{{ course.units }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="course_department" class="form-label">Department</label>
+                                <input type="text" class="form-control" id="course_department" name="department" value="{{ course.department }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="course_instructor" class="form-label">Instructor</label>
+                                <input type="text" class="form-control" id="course_instructor" name="instructor" value="{{ course.instructor }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="course_days" class="form-label">Days</label>
+                                <input type="text" class="form-control" id="course_days" name="days" value="{{ course.days }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="course_start_time" class="form-label">Start Time</label>
+                                <input type="time" class="form-control" id="course_start_time" name="start_time" value="{{ course.start_time|time:"H:i" }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="course_end_time" class="form-label">End Time</label>
+                                <input type="time" class="form-control" id="course_end_time" name="end_time" value="{{ course.end_time|time:"H:i" }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="course_exam_datetime" class="form-label">Exam Date & Time</label>
+                                <input type="datetime-local" class="form-control" id="course_exam_datetime" name="exam_datetime" value="{{ course.exam_datetime|date:"Y-m-d\TH:i" }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="course_capacity" class="form-label">Capacity</label>
+                                <input type="number" class="form-control" id="course_capacity" name="capacity" value="{{ course.capacity }}">
+                            </div>
 
-                    <button type="submit" class="btn btn-success">Update Course</button>
-                </form>
+                            <button type="submit" class="btn btn-success">Update Course</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-
 
         <!-- Delete Confirmation Modal (DELETE Method) -->
         <div class="modal fade" id="deleteModal{{ course.id }}" tabindex="-1">
