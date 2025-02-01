@@ -25,7 +25,17 @@ def manage_courses(request):
         )
     else:
         courses = Course.objects.all()
-
+    
+    
+    # Calculate progress and color for each course
+    for course in courses:
+        enrolled_count = course.enrolled_students.count()
+        if enrolled_count >= course.capacity:
+            course.color = 'green'
+        elif enrolled_count >= course.capacity / 2:
+            course.color = 'yellow'
+        else:
+            course.color = 'red'
     # Handle the POST request for adding new courses
     if request.method == 'POST':
         form = CourseForm(request.POST)
