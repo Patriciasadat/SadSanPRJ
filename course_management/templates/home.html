@@ -16,7 +16,7 @@
         {% if user.is_authenticated %}
             <p>Hello, {{ user.first_name }} {{ user.last_name }}!</p>
 
-            <div class="mt-4">
+            <div class="mt-4 button-group">
                 <!-- Link to Schedule if user is not an admin -->
                 <a href="{% url 'schedule:weekly_schedule' %}" class="btn btn-primary">
                     Go to My Schedule
@@ -28,17 +28,15 @@
                         Manage Courses
                     </a>
                 {% endif %}
-            </div>
 
-            <!-- Logout Button -->
-            <div class="mt-4">
+                <!-- Logout Button -->
                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">
                     Logout
                 </button>
             </div>
         {% else %}
             <!-- If not logged in, show links to login and register -->
-            <div class="mt-4">
+            <div class="mt-4 button-group">
                 <a href="{% url 'registration:login' %}" class="btn btn-primary">Login</a>
                 <a href="{% url 'registration:register' %}" class="btn btn-success">Register</a>
             </div>
