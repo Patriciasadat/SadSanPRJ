@@ -1,6 +1,6 @@
 /* General Styles */
 body {
-    font-family: 'Georgia', serif; /* Elegant and academic font */
+    font-family: 'Georgia', serif, Arial, sans-serif; /* Elegant and academic font with a fallback */
     background-color: #EBF4F6; /* Light background for readability */
     color: #071952; /* Dark text for contrast */
     margin: 0;
@@ -8,11 +8,32 @@ body {
     line-height: 1.6;
 }
 
+/* Container */
+.container {
+    max-width: 800px; /* Increased max-width for a more spacious layout */
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Slightly stronger shadow for depth */
+    margin: auto; /* Centers the container */
+}
+
+/* Headings */
 h1, h2, h5 {
     color: #071952; /* Dark blue for headings */
     font-weight: bold;
+    text-align: center;
 }
 
+h1 {
+    margin-bottom: 30px;
+}
+
+h2 {
+    margin-top: 30px;
+}
+
+/* Links */
 a {
     color: #37B7C3; /* Accent color for links */
     text-decoration: none;
@@ -23,13 +44,24 @@ a:hover {
 }
 
 /* Buttons */
-button, .btn {
-    padding: 10px 20px;
+button, .btn, .btn-custom {
+    padding: 12px 25px; /* Slightly bigger buttons for better clickability */
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.btn-custom {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-custom:hover {
+    background-color: #0056b3;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary {
@@ -74,18 +106,39 @@ button, .btn {
     background-color: #088395;
 }
 
+/* Text Center */
+.text-center {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.already-registered {
+    font-size: 14px;
+    color: #555;
+}
+
+.already-registered a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.already-registered a:hover {
+    text-decoration: underline;
+}
+
 /* Table Styles */
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin-top: 30px;
     background-color: #fff; /* White background for tables */
     border: 1px solid #ddd;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Slight shadow for the table */
+    border-radius: 8px; /* Rounded corners for a modern feel */
 }
 
 table th, table td {
-    padding: 10px;
+    padding: 12px;
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
@@ -115,13 +168,13 @@ table tr:hover {
 
 .modal-dialog {
     position: relative;
-    margin: 15% auto;
+    margin: 10% auto;
     background-color: #fff;
-    padding: 20px;
+    padding: 30px;
     width: 80%;
-    max-width: 500px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Stronger shadow for emphasis */
 }
 
 .modal-header, .modal-footer {
@@ -143,16 +196,17 @@ table tr:hover {
 }
 
 .modal-footer button {
-    padding: 8px 15px;
+    padding: 10px 20px;
+    font-size: 16px;
 }
 
 /* Close Button */
 .btn-close {
-    font-size: 1.5em;
-    color: #071952;
+    font-size: 2em;
+    color: #333;
     background: none;
     border: none;
-    cursor: pointer;
+    opacity: 1;
     position: absolute;
     right: 10px;
     top: 10px;
@@ -163,18 +217,60 @@ table tr:hover {
     align-items: center;
     border-radius: 50%;
     background-color: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+.btn-close::before, .btn-close::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 18px;
+    height: 2px;
+    background-color: #333;
+    transform: translate(-50%, -50%);
+}
+
+.btn-close::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.btn-close::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
 }
 
 .btn-close:hover {
-    background-color: #071952;
     color: #fff;
+    background-color: #000;
+    opacity: 1;
+}
+
+.btn-close:focus {
+    outline: none;
 }
 
 /* Add Course Container */
 .add-course-container {
     display: flex;
     justify-content: flex-end;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+/* Input Fields */
+input[type="text"], input[type="number"], input[type="time"], input[type="datetime-local"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus, input[type="number"]:focus, input[type="time"]:focus, input[type="datetime-local"]:focus {
+    border-color: #088395; /* Accent color on focus */
+    outline: none;
 }
 
 /* Responsive Design */
@@ -187,8 +283,21 @@ table tr:hover {
         font-size: 14px;
     }
 
-    button, .btn {
+    button, .btn, .btn-custom {
         font-size: 14px;
         padding: 8px 15px;
+    }
+
+    .container {
+        padding: 20px;
+    }
+
+    .modal-dialog {
+        width: 90%; /* Make modals more responsive on small screens */
+        max-width: none;
+    }
+
+    input[type="text"], input[type="number"], input[type="time"], input[type="datetime-local"] {
+        font-size: 14px;
     }
 }
