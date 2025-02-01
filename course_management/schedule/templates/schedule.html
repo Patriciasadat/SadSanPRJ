@@ -1,17 +1,133 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css/schedule.css' %}">
     <title>Weekly Schedule</title>
+    <style>
+    /* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 20px;
+        text-align: center;
+    }
+
+    .day {
+        padding: 15px;
+        margin: 8px 0;
+    }
+}
+
+/* General Styles */
+body {
+    font-family: 'Georgia', serif, Arial, sans-serif; /* Consistent font with homepage */
+    background-color: #f1f5f9;
+    margin: 0;
+    padding: 30px;
+    color: #333;
+    text-align: center;
+}
+
+h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+/* Schedule Container */
+.schedule {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Day Card Styles */
+.day {
+    background: #ffffff;
+    padding: 20px;
+    margin: 10px 0;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 800px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.day:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+h2 {
+    color: #4a4a4a;
+    font-size: 24px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+/* Course List */
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    font-size: 16px;
+    color: #555;
+    margin: 8px 0;
+    padding: 5px 10px;
+    border-left: 4px solid #37b7c3;
+    background-color: #fafafa;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+li:hover {
+    background-color: #e5f6f7;
+    transform: translateX(5px);
+}
+
+/* Back to Home Button */
+.btn-home {
+    background-color: #37B7C3;
+    color: #fff;
+    text-decoration: none;
+    display: inline-block;
+    padding: 12px 25px;
+    border-radius: 6px;
+    font-size: 16px;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 20px;
+}
+
+.btn-home:hover {
+    background-color: #088395;
+    transform: scale(1.05);
+}
+
+.button-container {
+    display: flex;
+    justify-content: center; /* Centers the button */
+    margin-bottom: 20px; /* Adds space between button and schedule */
+}
+
+    </style>
+    
+    
 </head>
+
 <body>
     <h1>Your Weekly Schedule</h1>
 
-    <!-- Back to Home Button -->
-    <button onclick="window.location.href='{% url 'home' %}'" class="btn btn-home">Back to Home</button>
+    <!-- Button Wrapper for Better Layout -->
+    <div class="button-container">
+        <a href="{% url 'home' %}" class="btn-home">Back to Home</a>
+    </div>
 
     <div class="schedule">
         {% for day, courses in schedule.items %}
