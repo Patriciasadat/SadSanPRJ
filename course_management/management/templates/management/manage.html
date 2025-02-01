@@ -74,10 +74,20 @@
             <td>{{ course.department }}</td>
             <td>{{ course.instructor }}</td>
 
-            <!-- Clickable Capacity -->
+            <!-- Capacity Progress Bar -->
             <td>
                 <a href="#" class="view-students" data-bs-toggle="modal" data-bs-target="#studentsModal{{ course.id }}">
-                    {{ course.enrolled_students.count }}/{{ course.capacity }}
+                    <div class="progress" style="height: 20px;">
+                        <div class="progress-bar" role="progressbar" style="color: black;"
+                             style="width: {{ course.enrolled_students.count|add:0 }}% ;
+                                    background-color: {{ course.color }};
+                             aria-valuenow="{{ course.enrolled_students.count }}" 
+                             aria-valuemin="0" aria-valuemax="{{ course.capacity }}">
+                            <span class="progress-text">
+                                {{ course.enrolled_students.count }}/{{ course.capacity }}
+                            </span>
+                        </div>
+                    </div>
                 </a>
             </td>
 
