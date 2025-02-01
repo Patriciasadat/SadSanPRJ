@@ -28,7 +28,7 @@ class Course(models.Model):
     def save(self, *args, **kwargs):
         if not self.end_time:  # Only set end_time if it is not already set
             start_datetime = datetime.combine(datetime.min, self.start_time)
-            self.end_time = (start_datetime + timedelta(hours=1)).time()
+            self.end_time = (start_datetime + timedelta(hours=1 , minutes=20)).time()
         super().save(*args, **kwargs)
 
     def __str__(self):
