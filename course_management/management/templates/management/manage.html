@@ -77,7 +77,7 @@
             <!-- Clickable Capacity -->
             <td>
                 <a href="#" class="view-students" data-bs-toggle="modal" data-bs-target="#studentsModal{{ course.id }}">
-                    {{ course.remaining_capacity }}/{{ course.capacity }}
+                    {{ course.enrolled_students.count }}/{{ course.capacity }}
                 </a>
             </td>
 
