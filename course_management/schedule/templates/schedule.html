@@ -11,7 +11,7 @@
     <h1>Your Weekly Schedule</h1>
 
     <!-- Back to Home Button -->
-    <a href="{% url 'home' %}" class="btn btn-home">Back to Home</a>
+    <button onclick="window.location.href='{% url 'home' %}'" class="btn btn-home">Back to Home</button>
 
     <div class="schedule">
         {% for day, courses in schedule.items %}
