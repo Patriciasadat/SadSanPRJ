@@ -42,23 +42,7 @@
             <div class="modal-body">
                 <form method="POST" action="{% url 'management:manage_courses' %}">
                     {% csrf_token %}
-                    {{ form.as_p }}
-
-                    <!-- Only the time picker fields for start time, end time, and exam datetime -->
-                    <div class="mb-3">
-                        <label for="id_start_time" class="form-label">Start Time</label>
-                        <input type="time" id="id_start_time" name="start_time" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="id_end_time" class="form-label">End Time</label>
-                        <input type="time" id="id_end_time" name="end_time" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="id_exam_datetime" class="form-label">Exam Date & Time</label>
-                        <input type="datetime-local" id="id_exam_datetime" name="exam_datetime" class="form-control" required>
-                    </div>
+                    {{ form.as_p }}  <!-- This will render all the necessary form fields -->
 
                     <button type="submit" class="btn btn-primary">Add Course</button>
                 </form>
