@@ -25,31 +25,31 @@ class CustomUserForm(UserCreationForm):
     first_name = forms.CharField(
         max_length=30, 
         required=True, 
-        widget=forms.TextInput(attrs={'class': 'form-control'})
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First Name'})
     )
     last_name = forms.CharField(
         max_length=30, 
         required=True, 
-        widget=forms.TextInput(attrs={'class': 'form-control'})
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last Name'})
     )
     email = forms.EmailField(
         required=True, 
-        widget=forms.EmailInput(attrs={'class': 'form-control'})
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'})
     )
     phone_number = forms.CharField(
         max_length=15, 
         required=True, 
-        widget=forms.TextInput(attrs={'class': 'form-control'})
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Phone Number'})
     )
     national_id = forms.CharField(
         max_length=10, 
         required=True, 
-        widget=forms.TextInput(attrs={'class': 'form-control'})
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'National ID'})
     )
     student_id = forms.CharField(
         max_length=20, 
         required=False, 
-        widget=forms.TextInput(attrs={'class': 'form-control'})
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Student ID'})
     )
     is_admin = forms.BooleanField(
         required=False, 
@@ -58,15 +58,15 @@ class CustomUserForm(UserCreationForm):
     admin_code = forms.CharField(
         max_length=20, 
         required=False, 
-        widget=forms.TextInput(attrs={'class': 'form-control'})
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Admin Code'})
     )
     password1 = forms.CharField(
         label="Password", 
-        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'})
     )
     password2 = forms.CharField(
         label="Confirm Password", 
-        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm Password'})
     )
 
     class Meta:
