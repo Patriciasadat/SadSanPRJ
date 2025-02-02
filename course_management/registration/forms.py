@@ -22,11 +22,52 @@ def national_code_checker(string):
         raise ValidationError("Invalid National ID.")
 
 class CustomUserForm(UserCreationForm):
-    phone_number = forms.CharField(max_length=15, required=True)
-    national_id = forms.CharField(max_length=10, required=True)
-    student_id = forms.CharField(max_length=20, required=False)
-    is_admin = forms.BooleanField(required=False)
-    admin_code = forms.CharField(max_length=20, required=False, help_text="Enter your admin code.")
+    first_name = forms.CharField(
+        max_length=30, 
+        required=True, 
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    last_name = forms.CharField(
+        max_length=30, 
+        required=True, 
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    email = forms.EmailField(
+        required=True, 
+        widget=forms.EmailInput(attrs={'class': 'form-control'})
+    )
+    phone_number = forms.CharField(
+        max_length=15, 
+        required=True, 
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    national_id = forms.CharField(
+        max_length=10, 
+        required=True, 
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    student_id = forms.CharField(
+        max_length=20, 
+        required=False, 
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    is_admin = forms.BooleanField(
+        required=False, 
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )
+    admin_code = forms.CharField(
+        max_length=20, 
+        required=False, 
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    password1 = forms.CharField(
+        label="Password", 
+        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+    )
+    password2 = forms.CharField(
+        label="Confirm Password", 
+        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+    )
 
     class Meta:
         model = CustomUser
