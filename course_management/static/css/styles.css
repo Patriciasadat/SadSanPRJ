@@ -1,8 +1,8 @@
 /* General Styles */
 body {
-    font-family: 'Georgia', serif, Arial, sans-serif; /* Elegant and academic font with a fallback */
-    background-color: #EBF4F6; /* Light background for readability */
-    color: #071952; /* Dark text for contrast */
+    font-family: 'Georgia', serif, Arial, sans-serif;
+    background-color: #EBF4F6;
+    color: #071952;
     margin: 0;
     padding: 20px;
     line-height: 1.6;
@@ -10,32 +10,24 @@ body {
 
 /* Container */
 .container {
-    max-width: 800px; /* Increased max-width for a more spacious layout */
+    max-width: 800px;
     background-color: white;
     padding: 30px;
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Slightly stronger shadow for depth */
-    margin: auto; /* Centers the container */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin: auto;
 }
 
 /* Headings */
 h1, h2, h5 {
-    color: #071952; /* Dark blue for headings */
+    color: #071952;
     font-weight: bold;
     text-align: center;
 }
 
-h1 {
-    margin-bottom: 30px;
-}
-
-h2 {
-    margin-top: 30px;
-}
-
 /* Links */
 a {
-    color: #37B7C3; /* Accent color for links */
+    color: #37B7C3;
     text-decoration: none;
 }
 
@@ -43,73 +35,94 @@ a:hover {
     text-decoration: underline;
 }
 
-/* Buttons */
-button, .btn, .btn-custom {
-    padding: 12px 25px; /* Slightly bigger buttons for better clickability */
+
+/* icons */
+/* General icon button styles */
+icon1 {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px; /* Same width for all buttons */
+    height: 40px; /* Same height for all buttons */
+    background: none;
     border: none;
-    border-radius: 6px;
-    font-size: 16px;
+    padding: 8px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    transition: transform 0.2s ease-in-out;
+    user-select: none;
 }
 
-.btn-custom {
-    width: 100%;
-    background-color: #007bff;
-    color: white;
+icon1 img {
+    width: 80%;
+    height: 80%;
+    object-fit: contain;
 }
 
-.btn-custom:hover {
-    background-color: #0056b3;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+icon1:hover {
+    transform: scale(1.15); /* Slightly enlarges the icon on hover */
 }
 
-.btn-primary {
-    background-color: #088395; /* Primary button color */
-    color: #fff;
+icon1:active {
+    transform: scale(0.95); /* Slight press effect */
 }
 
-.btn-primary:hover {
-    background-color: #071952; /* Darker blue on hover */
-    transform: scale(1.05);
+
+
+/* Home & Add Course Buttons */
+.icon-container {
+    display: flex;
+    justify-content: flex-start;
+    gap: 20px; /* Adjusts space between the buttons */
+    margin-bottom: 20px;
 }
 
-.btn-danger {
-    background-color: #DC3545; /* Red for danger actions */
-    color: #fff;
+.icon-container img {
+    width: 50px;  /* Adjust width of the image */
+    height: 50px; /* Adjust height of the image */
+    object-fit: contain;  /* Ensures the image scales without distortion */
 }
 
-.btn-danger:hover {
-    background-color: #C82333;
-    transform: scale(1.05);
+/* Style for the Search Icon */
+.search-icon {
+    width: 25px;  /* Adjust the size as needed */
+    height: 25px;  /* Adjust the size as needed */
+    margin-top: -15px;
+    margin-left: -20px;
 }
 
-.btn-secondary {
-    background-color: #6C757D; /* Neutral gray for secondary actions */
-    color: #fff;
+.search-icon:hover {
+    transform: scale(1.15); /* Slightly enlarges the icon on hover */
 }
 
-.btn-secondary:hover {
-    background-color: #5A6268;
-    transform: scale(1.05);
+.search-icon:active {
+    transform: scale(0.95); /* Slight press effect */
 }
 
-.btn-home {
-    background-color: #37B7C3; /* Accent color for home button */
-    color: #fff;
-    text-decoration: none;
-    display: inline-block;
-    margin-top: 20px;
+
+
+/* Align Search bar with the icon */
+.input-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+
 }
 
-.btn-home:hover {
-    background-color: #088395;
+
+.input-group input {
+    width: 90%;  /* Makes the input take most of the space */
 }
 
-/* .btn-success Button Styles */
-.btn-success {
-    background-color: #28a745; /* Green color for success buttons */
-    color: white;
+.input-group button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+
+/* Buttons */
+button, .btn, .btn-custom, .btn-success {
     padding: 12px 25px;
     border: none;
     border-radius: 6px;
@@ -118,26 +131,99 @@ button, .btn, .btn-custom {
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
 }
 
+/* .btn-custom */
+.btn-custom {
+    width: 100%;
+    background-color: #007bff;
+    color: white; /* Ensures the text is white by default */
+    border: none; /* Optional: removes border if present */
+}
+
+.btn-custom:hover {
+    background-color: #0056b3;
+    color: white; /* Keeps the text white on hover */
+    box-shadow: 0 4px 8px rgba(254, 254, 254, 0.1); /* Optional: adds a shadow effect */
+    transform: scale(1.05);
+}
+
+.btn-custom:active {
+    transform: scale(0.95); /* Optional, for a pressed effect */
+}
+
+/* .btn-primary */
+.btn-primary {
+    background-color: #088395;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #071952;
+    transform: scale(1.05);
+}
+
+/* .btn-danger */
+.btn-danger {
+    background-color: #DC3545;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background-color: #C82333;
+    transform: scale(1.05);
+}
+
+/* .btn-secondary */
+.btn-secondary {
+    background-color: #6C757D;
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background-color: #5A6268;
+    transform: scale(1.05);
+}
+
+/* .btn-home */
+.btn-home {
+    background-color: #37B7C3;
+    color: #fff;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.btn-home:hover {
+    background-color: #088395;
+}
+
+/* .btn-success */
+.btn-success {
+    background-color: #28a745;
+    color: white;
+}
+
 .btn-success:hover {
-    background-color: #218838; /* Darker green on hover */
-    transform: scale(1.05); /* Slightly enlarges the button on hover */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow on hover */
+    background-color: #218838;
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .btn-success:focus {
-    outline: none; /* Removes focus outline */
-    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.5); /* Add a green glow around the button when focused */
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.5);
 }
 
-
-/* Button Group (for proper spacing and alignment) */
+/* Button Group */
 .button-group {
     display: flex;
-    flex-direction: column; /* Stack buttons vertically */
-    gap: 15px; /* Adds space between buttons */
-    align-items: center; /* Centers buttons horizontally */
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
     margin-top: 20px;
 }
+
+
 
 /* Text Center */
 .text-center {
@@ -145,6 +231,7 @@ button, .btn, .btn-custom {
     margin-top: 20px;
 }
 
+/* Already Registered */
 .already-registered {
     font-size: 14px;
     color: #555;
@@ -164,10 +251,10 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 30px;
-    background-color: #fff; /* White background for tables */
+    background-color: #fff;
     border: 1px solid #ddd;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Slight shadow for the table */
-    border-radius: 8px; /* Rounded corners for a modern feel */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
 }
 
 table th, table td {
@@ -177,26 +264,31 @@ table th, table td {
 }
 
 table th {
-    background-color: #071952; /* Dark blue for table headers */
+    background-color: #071952;
     color: #fff;
     font-weight: bold;
 }
 
 table tr:hover {
-    background-color: #f1f1f1; /* Subtle hover effect */
+    background-color: #f1f1f1;
 }
 
 /* Modal Styles */
 .modal {
-    display: none;  /* This is correct for initial hiding */
+    display: none;
     position: fixed;
-    z-index: 1050; /* Ensure the modal appears above other content */
+    z-index: 1050;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* Modal button styling */
+.modal-footer .btn {
+    width: 100%;
 }
 
 .modal-dialog {
@@ -207,7 +299,7 @@ table tr:hover {
     width: 80%;
     max-width: 600px;
     border-radius: 10px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Stronger shadow for emphasis */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
 }
 
 .modal-header, .modal-footer {
@@ -233,9 +325,9 @@ table tr:hover {
     font-size: 16px;
 }
 
-/* Modal Backdrop Styles (if needed) */
+/* Modal Backdrop Styles */
 .modal-backdrop {
-    z-index: 1040 !important; /* Make sure it's below the modal dialog */
+    z-index: 1040 !important;
 }
 
 /* Close Button */
@@ -295,8 +387,8 @@ table tr:hover {
 }
 
 /* Input Fields */
-input[type="text"], input[type="number"], input[type="time"], input[type="datetime-local"] {
-    width: 100%;
+input[type="text"], input[type="number"], input[type="time"], input[type="datetime-local"], .form-control {
+    width: 30%;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 6px;
@@ -306,8 +398,8 @@ input[type="text"], input[type="number"], input[type="time"], input[type="dateti
     transition: border-color 0.3s ease;
 }
 
-input[type="text"]:focus, input[type="number"]:focus, input[type="time"]:focus, input[type="datetime-local"]:focus {
-    border-color: #088395; /* Accent color on focus */
+input[type="text"]:focus, input[type="number"]:focus, input[type="time"]:focus, input[type="datetime-local"]:focus, .form-control:focus {
+    border-color: #088395;
     outline: none;
 }
 
@@ -331,7 +423,7 @@ input[type="text"]:focus, input[type="number"]:focus, input[type="time"]:focus, 
     }
 
     .modal-dialog {
-        width: 90%; /* Make modals more responsive on small screens */
+        width: 90%;
         max-width: none;
     }
 
@@ -340,17 +432,146 @@ input[type="text"]:focus, input[type="number"]:focus, input[type="time"]:focus, 
     }
 }
 
-/* Flexbox for Button Group */
-.button-group {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-top: 20px;
+/* Progress Bar */
+.progress {
+    background-color: #f3f3f3;
+    border-radius: 5px;
+    position: relative; /* Needed for absolute positioning of text */
+    height: 20px; /* Set the height of the progress bar */
+    width: 100%;
 }
 
-/* Spacing adjustments for buttons */
-.btn-home {
-    margin-top: 20px;
-    display: inline-block;
+/* Progress Bar itself */
+.progress-bar {
+    height: 100%;
+    background-color: #4caf50; /* Default color */
+    transition: width 0.5s ease;
+}
+
+/* Centered Text */
+.progress-text {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centers the text */
+    color: black;
+    font-weight: bold;
+    font-size: 12px;
+    width: 100%; /* Ensures the text is centered within the parent */
+    text-align: center;
+}
+
+form p input[type="password"] {
+    width: 31%;
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    border: 1px solid #ced4da;
+    margin-bottom: 15px;  /* Add margin to space out the inputs */
+}
+/* Footer styling */
+.footer {
+    background-color: #007bff; /* Blue background */
+    width: 60%;                 /* Set width to 90% of the parent container */
+    color: black;
+    text-align: center;
+    border-radius: 20px;        /* Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: shadow for a smooth look */
+    padding: 5px 0;
+    margin: 0 auto;             /* Center footer horizontally */
+    margin-top: 20px;           /* Space between footer and the rest of the content */
+    display: flex;              /* Use flexbox for centering */
+    justify-content: center;    /* Center content horizontally */
+    align-items: center;        /* Center content vertically (optional) */
+}
+
+/* Footer link styling */
+.footer a {
+    color: blue;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+/* Container styling for footer */
+.footer .container {
+    width: 100%;
+    max-width: 1200px;           /* Max width for container */
+    margin: 0 auto;              /* Center container */
+    display: flex;               /* Flexbox for alignment */
+    justify-content: space-between; /* Space between content */
+    align-items: center;         /* Vertically center content */
+    padding: 10px 20px;          /* Reduced padding for a smaller footer */
+}
+
+
+.logo {
+    display: block;
+    margin: 0 auto;
+    max-width: 150px;
+    height: auto;
+    margin-bottom: 20px; /* Space below the logo */
+}
+
+/* Footer styling (from first HTML) */
+.footer {
+    background-color: #007bff; /* Blue background */
+    width: 60%;                 /* Set width to 90% of the parent container */
+    color: black;
+    text-align: center;
+    border-radius: 20px;        /* Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: shadow for a smooth look */
+    padding: 5px 0;
+    margin: 0 auto;             /* Center footer horizontally */
+    margin-top: 20px;           /* Space between footer and the rest of the content */
+    display: flex;              /* Use flexbox for centering */
+    justify-content: center;    /* Center content horizontally */
+    align-items: center;        /* Center content vertically (optional) */
+}
+
+/* Footer link styling */
+.footer a {
+    color: black;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+/* Container styling for footer */
+.footer .container {
+    width: 100%;
+    max-width: 1200px;           /* Max width for container */
+    margin: 0 auto;              /* Center container */
+    display: flex;               /* Flexbox for alignment */
+    justify-content: space-between; /* Space between content */
+    align-items: center;         /* Vertically center content */
+    padding: 10px 20px;          /* Reduced padding for a smaller footer */
+}
+
+/* Logo Styling */
+.footer .footer-logo {
+    width: 50px;    /* Default size for the logo */
+    height: auto;   /* Maintain aspect ratio */
+    margin-left: 20px; /* Space between text and logo */
+}
+
+/* Optional: Responsive adjustment for small screens */
+@media (max-width: 768px) {
+    .footer {
+        padding: 15px 0; /* Adjust padding on smaller screens */
+    }
+
+    .footer .container {
+        flex-direction: column;  /* Stack content on top of each other */
+        text-align: center;      /* Center text */
+    }
+
+    .footer .footer-logo {
+        margin-top: 10px;        /* Add space between logo and text */
+    }
 }
