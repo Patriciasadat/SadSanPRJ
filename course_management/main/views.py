@@ -124,14 +124,14 @@ def enroll_in_course(request, course_id):
     # Check if the course is already full
     if course.enrolled_students.count() >= course.capacity:
         messages.error(request, "This course is already full.")
-        return redirect('students:main_page')
+        return redirect('main:main_page')
 
     # Check if the student is already enrolled in the course
     if course in student.enrolled_courses.all():
         messages.warning(request, "You are already enrolled in this course.")
-        return redirect('students:main_page')
+        return redirect('main:main_page')
 
     # Enroll the student in the course
     course.enrolled_students.add(student)
     messages.success(request, f"Successfully enrolled in {course.name}!")
-    return redirect('students:main_page')
+    return redirect('main:main_page')
