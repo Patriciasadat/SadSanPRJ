@@ -1,0 +1,40 @@
+<!-- templates/students/main_page.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Available Courses</h1>
+
+<!-- Search Form -->
+<form method="get" action="{% url 'students:main_page' %}">
+    <input type="text" name="search" placeholder="Search courses..." value="{{ search_query }}">
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+<!-- Course List -->
+<ul>
+    {% for course in courses %}
+    <li>
+        <h3>{{ course.name }} ({{ course.code }})</h3>
+        <p>Department: {{ course.department }}</p>
+        <p>Instructor: {{ course.instructor }}</p>
+        <p>Enrollment: {{ course.enrolled_students_count }} / {{ course.capacity }}</p>
+        <p>Status: {% if course.is_full %}Full{% else %}Available{% endif %}</p>
+        <a href="{% url 'students:enroll_in_course' course.id %}" class="btn btn-success">Enroll</a>
+    </li>
+    {% endfor %}
+</ul>
+
+<!-- Enrolled Courses -->
+<h2>Your Enrolled Courses</h2>
+<ul>
+    {% for course in enrolled_courses %}
+    <li>
+        <h3>{{ course.name }} ({{ course.code }})</h3>
+        <p>Department: {{ course.department }}</p>
+        <p>Instructor: {{ course.instructor }}</p>
+    </li>
+    {% empty %}
+    <p>You are not enrolled in any courses.</p>
+    {% endfor %}
+</ul>
+{% endblock %}
