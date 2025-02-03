@@ -1,13 +1,19 @@
-<!-- main/templates/main/main_page.html -->
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
 
-{% block content %}
 <h1>Available Courses</h1>
 
 <!-- Search Form -->
 <form method="get" action="{% url 'main:main_page' %}">
     <input type="text" name="search" placeholder="Search courses..." value="{{ search_query }}">
-    <button type="submit" class="btn btn-primary">Search</button>
+    <button type="submit">Search</button>
 </form>
 
 <!-- Course List -->
@@ -19,7 +25,7 @@
         <p>Instructor: {{ course.instructor }}</p>
         <p>Enrollment: {{ course.enrolled_students_count }} / {{ course.capacity }}</p>
         <p>Status: {% if course.is_full %}Full{% else %}Available{% endif %}</p>
-        <a href="{% url 'main:enroll_in_course' course.id %}" class="btn btn-success">Enroll</a>
+        <a href="{% url 'main:enroll_in_course' course.id %}">Enroll</a>
     </li>
     {% endfor %}
 </ul>
@@ -37,4 +43,6 @@
     <p>You are not enrolled in any courses.</p>
     {% endfor %}
 </ul>
-{% endblock %}
+
+</body>
+</html>
