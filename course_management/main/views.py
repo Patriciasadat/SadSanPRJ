@@ -100,3 +100,18 @@ def view_profile(request):
         form = StudentProfileForm(instance=student)
 
     return render(request, 'students/view_profile.html', {'form': form})
+
+@login_required
+def update_profile(request):
+    student = request.user.student  # Get the current student
+
+    if request.method == 'POST':
+        form = StudentProfileForm(request.POST, instance=student)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Your profile has been updated!")
+            return redirect('students:update_profile')
+    else:
+        form = StudentProfileForm(instance=student)
+
+    return render(request, 'students/update_profile.html', {'form': form})
