@@ -110,12 +110,12 @@ def update_profile(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Your profile has been updated!")
-            return redirect('students:update_profile')
+            return redirect('main:update_profile')
     else:
         form = StudentProfileForm(instance=student)
 
-    return render(request, 'students/update_profile.html', {'form': form})
-
+    return render(request, 'main/update_profile.html', {'form': form})
+    
 @login_required
 def enroll_in_course(request, course_id):
     course = get_object_or_404(Course, id=course_id)
