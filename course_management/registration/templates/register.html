@@ -8,6 +8,205 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 
+<style>
+    /* Center the entire container */
+    .center-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh; /* Full viewport height */
+        text-align: center; /* Center text */
+    }
+
+    .registration-form-container {
+        width: 100%;
+        max-width: 450px; /* Limit the form box width */
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        position: relative; /* Enable absolute positioning of "Welcome" text */
+    }
+
+    .logo {
+        display: block;
+        margin: 0 auto;
+        max-width: 150px;
+        height: auto;
+        margin-bottom: 20px; /* Space below the logo */
+    }
+
+    .text-below-logo {
+        text-align: center;
+        margin-top: 10px;
+        font-size: 16px;
+        color: #555;
+    }
+
+    .message p {
+        color: red;
+    }
+
+    /* Optional: Make sure form stays responsive */
+    @media (max-width: 768px) {
+        .registration-form-container {
+            width: 90%; /* Make the form take up more space on small screens */
+        }
+    }
+
+    /* Ensure form labels align to the left */
+    .form-label {
+        text-align: left;
+        display: block;
+        margin-bottom: .5rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+        margin-bottom: 1rem;
+    }
+
+    /* Adjust width for form fields to make them smaller */
+    .form-group input, .form-group select, .form-group textarea {
+        width: 80%; /* Adjusted to make fields narrower */
+        padding: .375rem .75rem;
+        border: 1px solid #ccc;
+        border-radius: .25rem;
+        margin: 0;
+    }
+
+    /* Make the checkbox smaller */
+    #id_is_admin {
+        width: 20px;  /* Set the width */
+        height: 20px; /* Set the height */
+        transform: scale(1); /* Remove any scaling to avoid distortion */
+        margin-left: 0; /* Optional: Adjust alignment if needed */
+        -webkit-appearance: none; /* Remove default checkbox styles */
+        appearance: none; /* Remove default checkbox styles */
+        border: 2px solid #007bff; /* Add a border to make it look like a square */
+        border-radius: 2px; /* Optional: Slight round corners */
+        background-color: white; /* Set background color */
+    }
+
+    #id_is_admin:checked {
+        background-color: #007bff; /* Add color when checked */
+        border-color: #007bff; /* Change border color when checked */
+        position: relative;
+    }
+
+    #id_is_admin:checked::after {
+        position: absolute;
+        top: 4px;
+        left: 4px;
+        width: 6px;
+        height: 6px;
+        background-color: white;
+        transform: rotate(45deg); /* Rotate to form a check mark */
+    }
+
+    /* "Welcome" box on the side of the registration form */
+    .welcome-box {
+        width: 250px;
+        padding: 20px;
+        background-color: #e7f1ff;
+        border: 2px solid #007bff;
+        border-radius: 8px;
+        text-align: center;
+        font-size: 1.2rem;
+        color: #333;
+        font-weight: bold;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-left: 20px;
+    }
+
+    /* Adjust button styling */
+    .btn-custom {
+        width: 100%;
+        padding: 0.75rem;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: .25rem;
+        font-size: 1.1rem;
+    }
+
+    .btn-custom:hover {
+        background-color: #0056b3;
+    }
+
+
+.logo {
+            display: block;
+            margin: 0 auto;
+            max-width: 150px;
+            height: auto;
+            margin-bottom: 20px; /* Space below the logo */
+        }
+
+        /* Footer styling (from first HTML) */
+        .footer {
+            background-color: #007bff; /* Blue background */
+            width: 60%;                 /* Set width to 90% of the parent container */
+            color: black;
+            text-align: center;
+            border-radius: 20px;        /* Rounded corners */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: shadow for a smooth look */
+            padding: 5px 0;
+            margin: 0 auto;             /* Center footer horizontally */
+            margin-top: 20px;           /* Space between footer and the rest of the content */
+            display: flex;              /* Use flexbox for centering */
+            justify-content: center;    /* Center content horizontally */
+            align-items: center;        /* Center content vertically (optional) */
+        }
+
+        /* Footer link styling */
+        .footer a {
+            color: black;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Container styling for footer */
+        .footer .container {
+            width: 100%;
+            max-width: 1200px;           /* Max width for container */
+            margin: 0 auto;              /* Center container */
+            display: flex;               /* Flexbox for alignment */
+            justify-content: space-between; /* Space between content */
+            align-items: center;         /* Vertically center content */
+            padding: 10px 20px;          /* Reduced padding for a smaller footer */
+        }
+
+        /* Logo Styling */
+        .footer .footer-logo {
+            width: 50px;    /* Default size for the logo */
+            height: auto;   /* Maintain aspect ratio */
+            margin-left: 20px; /* Space between text and logo */
+        }
+
+        /* Optional: Responsive adjustment for small screens */
+        @media (max-width: 768px) {
+            .footer {
+                padding: 15px 0; /* Adjust padding on smaller screens */
+            }
+
+            .footer .container {
+                flex-direction: column;  /* Stack content on top of each other */
+                text-align: center;      /* Center text */
+            }
+
+            .footer .footer-logo {
+                margin-top: 10px;        /* Add space between logo and text */
+            }
+        }
+
+
+</style>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -29,28 +228,70 @@
             toggleFields();  // Call on page load in case of pre-filled form
         });
     </script>
-
 </head>
 <body>
 
-    <div class="container">
-        <h1>Register</h1>
+    <!-- Centering the form inside a container -->
+    <div class="center-container">
+        <div class="registration-form-container">
+            <!-- Logo inside the form -->
+            <img src="{% static 'icons/logo.png' %}" alt="Logo" class="logo">
 
-        <form method="POST">
-            {% csrf_token %}
-            <div class="mb-3">
-                {{ form.as_p }}
+            <h1>Register</h1>
+
+            {% if messages %}
+                <div class="message">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <!-- Make sure each form field is in a left-aligned group -->
+                    {% for field in form %}
+                        <div class="form-group">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.help_text %}
+                                <small class="form-text text-muted">{{ field.help_text }}</small>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="btn btn-custom">Register</button>
+            </form>
+
+            <div class="text-center already-registered">
+                <p>Already registered? <a href="{% url 'registration:login' %}">Log in</a> now!</p>
             </div>
-            <button type="submit" class="btn btn-custom">Register</button>
-        </form>
+        </div>
 
-        <div class="text-center already-registered">
-            <p>Already registered? <a href="{% url 'registration:login' %}">Log in</a> now!</p>
+        <!-- "Welcome" box on the side -->
+        <div class="welcome-box">
+            Welcome to the registration page! this website was created in order to help students and admins to create and enroll courses, in order to access the features either register via the form to the left, or login with your account
         </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <footer class="footer">
+
+    <footer>
+    <div class="container">
+        <p>&copy; 2025 Sadra & Sana Hosseini. All rights reserved.</p>
+        <p>Check out our Telegram :
+            <a href="https://t.me/Sadrasyx" target="_blank">Sadra</a> | 
+            <a href="https://t.me/PriPatricia" target="_blank">Sana</a> |
+        </p>
+        <!-- Add logo to the right -->
+        <img src="{% static 'icons/logo.png' %}" alt="Company Logo" class="footer-logo">
+    </div>
+</footer>
+
+
 
 </body>
 </html>
