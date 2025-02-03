@@ -8,27 +8,17 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-
+<img src="{% static 'icons/logo.png' %}" alt="Logo" class="logo">
 <h1>Manage Courses</h1>
 
-<!-- Back to Home Button -->
-<a href="{% url 'home' %}" class="btn btn-primary btn-home">Back to Home</a>
-
-<!-- Search Bar -->
-<div class="mb-3">
-    <form method="GET" action="{% url 'management:manage_courses' %}">
-        <div class="input-group">
-            <input type="text" class="form-control" name="search" placeholder="Search for a course" value="{{ request.GET.search }}">
-            <button class="btn btn-primary" type="submit">Search</button>
-        </div>
-    </form>
-</div>
-
-<!-- Add New Course Button -->
-<div class="add-course-container">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-        Add Course
-    </button>
+<!-- Home Button (Left) and Add New Course Button (Right) -->
+<div class="icon-container" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+    <icon1 role="button" tabindex="0" onclick="location.href='{% url 'home' %}'">
+        <img src="{% static 'icons/Back.png' %}" alt="Home" width="20" height="20">
+    </icon1>
+    <icon1 role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#addModal">
+        <img src="{% static 'icons/plus.png' %}" alt="Add Course" width="20" height="20">
+    </icon1>
 </div>
 
 <!-- Add Course Modal (POST Method) -->
@@ -43,7 +33,6 @@
                 <form method="POST" action="{% url 'management:manage_courses' %}">
                     {% csrf_token %}
                     {{ form.as_p }}  <!-- This will render all the necessary form fields -->
-
                     <button type="submit" class="btn btn-primary">Add Course</button>
                 </form>
             </div>
@@ -51,7 +40,18 @@
     </div>
 </div>
 
-<h2>Courses</h2>
+<div class="mb-3 text-center">
+    <form method="GET" action="{% url 'management:manage_courses' %}" class="d-inline-block">
+        <div class="input-group" style="max-width: 300px; margin: 0 auto;">
+            <input type="text" class="form-control" name="search" placeholder="Search" value="{{ request.GET.search }}">
+            <!-- Updated to remove outline on focus, and also keep the submit button functional -->
+            <button type="submit" class="icon1" role="button" tabindex="0">
+                <img class="search-icon" src="{% static 'icons/Search.png' %}" alt="Search" width="16" height="16">
+            </button>
+        </div>
+    </form>
+</div>
+
 <table>
     <thead>
         <tr>
@@ -78,14 +78,13 @@
             <td>
                 <a href="#" class="view-students" data-bs-toggle="modal" data-bs-target="#studentsModal{{ course.id }}">
                     <div class="progress" style="height: 20px;">
-                        <div class="progress-bar" role="progressbar" style="color: black;"
-                             style="width: {{ course.enrolled_students.count|add:0 }}% ;
-                                    background-color: {{ course.color }};
+                        <div class="progress-bar" role="progressbar" 
+                             style="width:{{ course.percentage }}%; background-color: {{ course.color }};"
                              aria-valuenow="{{ course.enrolled_students.count }}" 
                              aria-valuemin="0" aria-valuemax="{{ course.capacity }}">
-                            <span class="progress-text">
+                        </div>
+                        <div class="progress-text" >
                                 {{ course.enrolled_students.count }}/{{ course.capacity }}
-                            </span>
                         </div>
                     </div>
                 </a>
@@ -96,9 +95,13 @@
 
             <td>
                 <!-- Edit Button (PATCH) -->
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ course.id }}">Edit</button>
+                <icon1 class="icon-button" data-bs-toggle="modal" data-bs-target="#editModal{{ course.id }}">
+                    <img src="{% static 'icons/edit.png' %}" alt="Edit" width="24" height="24">
+                </icon1>
                 <!-- Delete Button (DELETE) -->
-                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ course.id }}">Delete</button>
+                <icon1 role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#deleteModal{{ course.id }}">
+                    <img src="{% static 'icons/delete.png' %}" alt="Delete" width="20" height="20">
+                </icon1>
             </td>
         </tr>
 
@@ -138,8 +141,6 @@
                         <form method="POST" action="{% url 'management:edit_course' course.id %}">
                             {% csrf_token %}
                             <input type="hidden" name="_method" value="PATCH">  <!-- PATCH method -->
-
-                            <!-- Manually filling out the fields from the CourseForm -->
                             <div class="mb-3">
                                 <label for="course_name" class="form-label">Course Name</label>
                                 <input type="text" class="form-control" id="course_name" name="name" value="{{ course.name }}">
@@ -217,6 +218,16 @@
 <!-- Include Bootstrap JS and jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-
+<footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Sadra & Sana Hosseini. All rights reserved.</p>
+            <p>Check out our Telegram :
+                <a href="https://t.me/Sadrasyx" target="_blank">Sadra</a> | 
+                <a href="https://t.me/PriPatricia" target="_blank">Sana</a> |
+            </p>
+            <!-- Add logo to the right -->
+            <img src="{% static 'icons/logo.png' %}" alt="Company Logo" class="footer-logo">
+        </div>
+    </footer>
 </body>
 </html>
