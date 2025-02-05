@@ -161,16 +161,6 @@ button, .btn, .btn-custom, .btn-success {
     transform: scale(1.05);
 }
 
-/* .btn-danger */
-.btn-danger {
-    background-color: #DC3545;
-    color: #fff;
-}
-
-.btn-danger:hover {
-    background-color: #C82333;
-    transform: scale(1.05);
-}
 
 /* .btn-secondary */
 .btn-secondary {
@@ -284,6 +274,7 @@ table tr:hover {
     height: 100%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.4);
+    animation: modal-backdrop-fade 0.5s ease;
 }
 
 /* Modal button styling */
@@ -300,8 +291,12 @@ table tr:hover {
     max-width: 600px;
     border-radius: 10px;
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transform: translateY(-30px);
+    animation: modal-dialog-slide-up 0.5s ease forwards;
 }
 
+/* Header, body, and footer styling */
 .modal-header, .modal-footer {
     display: flex;
     justify-content: space-between;
@@ -311,6 +306,7 @@ table tr:hover {
 .modal-header h5 {
     margin: 0;
     color: #071952;
+    font-size: 18px;
 }
 
 .modal-body {
@@ -320,14 +316,84 @@ table tr:hover {
     color: #071952;
 }
 
+
+
 .modal-footer button {
     padding: 10px 20px;
     font-size: 16px;
+    background-color: #071952;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
 }
+
+.modal-footer button:hover {
+    background-color: #354f8c;
+}
+
+
 
 /* Modal Backdrop Styles */
 .modal-backdrop {
     z-index: 1040 !important;
+    opacity: 0;
+    animation: backdrop-fade 0.5s ease forwards;
+}
+
+/* Keyframe Animations */
+
+/* Backdrop fade-in */
+@keyframes backdrop-fade {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}
+
+/* Modal dialog slide-up animation */
+@keyframes modal-dialog-slide-up {
+    0% {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Modal backdrop fade-in on opening */
+.modal.show {
+    display: block;
+    animation: modal-backdrop-fade 0.5s ease forwards;
+}
+
+/* Animation for modal backdrop when closing */
+.modal.fade .modal-backdrop {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Animation for modal content when closing */
+.modal.fade .modal-dialog {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+
+/* .btn-danger */
+.btn-danger {
+    background-color: #DC3545;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background-color: #C82333;
+    transform: scale(1.05);
 }
 
 /* Close Button */
@@ -472,7 +538,7 @@ form p input[type="password"] {
 }
 /* Footer styling */
 .footer {
-    background-color: #007bff; /* Blue background */
+    background-color: #071952; 
     width: 60%;                 /* Set width to 90% of the parent container */
     color: black;
     text-align: center;
@@ -488,7 +554,7 @@ form p input[type="password"] {
 
 /* Footer link styling */
 .footer a {
-    color: blue;
+    color: #071952;
     text-decoration: none;
 }
 
@@ -518,7 +584,7 @@ form p input[type="password"] {
 
 /* Footer styling (from first HTML) */
 .footer {
-    background-color: #007bff; /* Blue background */
+    background-color: #071952; 
     width: 60%;                 /* Set width to 90% of the parent container */
     color: black;
     text-align: center;
