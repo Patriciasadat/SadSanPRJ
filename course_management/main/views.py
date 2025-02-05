@@ -1,45 +1,50 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Course, Student
-from .forms import StudentProfileForm
-
+from django.db.models import Q
+from .models import Course, CustomUser
+from django.urls import reverse
+from datetime import datetime, timedelta
+from django.shortcuts import render
+from django.db.models import Q
+from django.contrib.auth.decorators import login_required
+from .models import Course
 
 @login_required
 def main_page(request):
     """ Main page for students to view available courses and enroll """
-    # Get the search query from the GET request (if it exists)
     search_query = request.GET.get('search', '')
 
-    # Filter courses based on the search query (if provided)
     if search_query:
         courses = Course.objects.filter(
-            Q(name__icontains=search_query) |  # Search by course name
-            Q(code__icontains=search_query) |  # Search by course code
-            Q(department__icontains=search_query) |  # Search by department
-            Q(instructor__icontains=search_query)  # Search by instructor name
+            Q(name__icontains=search_query) |
+            Q(code__icontains=search_query) |
+            Q(department__icontains=search_query) |
+            Q(instructor__icontains=search_query)
         )
     else:
         courses = Course.objects.all()
 
-    # Calculate enrollment progress for each course
+    # Calculate enrollment progress and assign colors
     for course in courses:
         enrolled_count = course.enrolled_students.count()
         percentage = (enrolled_count / course.capacity) * 100 if course.capacity else 0  # Avoid division by zero
-        if enrolled_count >= course.capacity:
-            course.color = 'green'
-        elif enrolled_count >= course.capacity / 2:
+        
+        if enrolled_count > course.capacity/2:
             course.color = 'yellow'
-        else:
+        elif enrolled_count <= course.capacity / 2:
+            course.color = 'green'
+        elif enrolled_count == course.capacity:
             course.color = 'red'
         
         course.percentage = percentage
 
-    # Get the current student's enrolled courses
-    student = request.user.student
-    enrolled_courses = student.enrolled_courses.all()
+    # Get the current user's enrolled courses
+    user = request.user
+    enrolled_courses = user.enrolled_courses.all()
 
-    return render(request, 'students/main_page.html', {
+    # Return the page with modal-ready data
+    return render(request, 'main/main_page.html', {
         'courses': courses,
         'enrolled_courses': enrolled_courses,
         'search_query': search_query
@@ -47,91 +52,120 @@ def main_page(request):
 
 
 @login_required
-def enroll_in_course(request, course_id):
-    """ Enroll the current student in a course """
-    course = get_object_or_404(Course, id=course_id)
-    student = request.user.student
+def enroll_in_course(request, course_code):
+    """ Enroll the current user in a course via a modal submission """
+    course = get_object_or_404(Course, code=course_code)
+    user = request.user
 
-    # Check if the course is already full
+    # Ensure only students (not admins) can enroll
+    if user.is_admin:
+        messages.error(request, "Admins cannot enroll in courses.")
+        return redirect('main:main_page')
+
+    # Check if the course is full
     if course.enrolled_students.count() >= course.capacity:
         messages.error(request, "This course is already full.")
-        return redirect('students:main_page')
+        return redirect('main:main_page')
 
-    # Check if the student is already enrolled in the course
-    if course in student.enrolled_courses.all():
+    # Check if already enrolled
+    if course in user.enrolled_courses.all():
         messages.warning(request, "You are already enrolled in this course.")
-        return redirect('students:main_page')
+        return redirect('main:main_page')
 
-    # Enroll the student in the course
-    course.enrolled_students.add(student)
+    # Check for overlapping courses or exams
+    conflicting_courses = user.enrolled_courses.all()
+    for enrolled_course in conflicting_courses:
+        # Check if the courses overlap in time
+        if is_course_time_conflict(course, enrolled_course):
+            messages.error(request, f"You cannot enroll in {course.name} because it conflicts with {enrolled_course.name}.")
+            return redirect('main:main_page')
+        
+        # Check if the exams overlap
+        if is_exam_conflict(course, enrolled_course):
+            messages.error(request, f"You cannot enroll in {course.name} because its exam conflicts with {enrolled_course.name}'s exam.")
+            return redirect('main:main_page')
+
+    # Enroll the user in the course and add the course to user's enrolled courses
+    course.enrolled_students.add(user)
+    user.enrolled_courses.add(course)  # This will add the course to the user's courses as well
+
+    # Save changes to both user and course
+    user.save()
+    course.save()
+
     messages.success(request, f"Successfully enrolled in {course.name}!")
-    return redirect('students:main_page')
 
+    # Redirect back to the main page with the search query intact (so it maintains state)
+    search_query = request.GET.get('search', '')  # Get the current search query
+    return redirect(f'{reverse("main:main_page")}?search={search_query}')
+
+
+def is_course_time_conflict(course1, course2):
+    """ Checks if the class times of two courses overlap """
+    # Ensure courses are on the same days
+    if not any(day in course1.days.split(", ") for day in course2.days.split(", ")):
+        return False
+
+    # Convert times to datetime for comparison
+    start1 = datetime.combine(datetime.min, course1.start_time)
+    end1 = start1 + timedelta(hours=1, minutes=20)  # Default duration of 1 hour 20 minutes
+    start2 = datetime.combine(datetime.min, course2.start_time)
+    end2 = start2 + timedelta(hours=1, minutes=20)
+
+    # Check for overlap
+    return (start1 < end2 and start2 < end1)
+
+
+def is_exam_conflict(course1, course2):
+    """ Checks if the final exams of two courses overlap """
+    # Compare exam datetimes directly without make_aware
+    return course1.exam_datetime == course2.exam_datetime
 
 @login_required
-def drop_course(request, course_id):
-    """ Drop a course for the current student """
-    course = get_object_or_404(Course, id=course_id)
-    student = request.user.student
+def drop_course(request, course_code):
+    """ Drop a course for the current user """
+    course = get_object_or_404(Course, code=course_code)
+    user = request.user
 
-    # Check if the student is enrolled in the course
-    if course not in student.enrolled_courses.all():
+    # Ensure the user is enrolled in the course
+    if course not in user.enrolled_courses.all():
         messages.warning(request, "You are not enrolled in this course.")
-        return redirect('students:main_page')
+        return redirect('main:main_page')
 
-    # Drop the course
-    course.enrolled_students.remove(student)
+    # Drop the course by removing the user from the enrolled_students list
+    course.enrolled_students.remove(user)
+    user.enrolled_courses.remove(course)  # This will remove the course from the user's courses
+
+    # Save changes to both user and course
+    user.save()
+    course.save()
+
     messages.success(request, f"Successfully dropped {course.name}.")
-    return redirect('students:main_page')
 
-
-@login_required
-def view_profile(request):
-    """ View and update the student's profile """
-    student = request.user.student
-
-    if request.method == 'POST':
-        form = StudentProfileForm(request.POST, instance=student)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Your profile has been updated!")
-            return redirect('students:view_profile')
-    else:
-        form = StudentProfileForm(instance=student)
-
-    return render(request, 'students/view_profile.html', {'form': form})
+    # Redirect back to the main page with the search query intact (so it maintains state)
+    search_query = request.GET.get('search', '')  # Get the current search query
+    return redirect(f'{reverse("main:main_page")}?search={search_query}')
 
 @login_required
 def update_profile(request):
-    student = request.user.student  # Get the current student
+    """ Handle profile update via a modal """
+    user = request.user
 
     if request.method == 'POST':
-        form = StudentProfileForm(request.POST, instance=student)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Your profile has been updated!")
-            return redirect('main:update_profile')
-    else:
-        form = StudentProfileForm(instance=student)
+        # Directly update user fields from request.POST
+        user.first_name = request.POST.get('first_name', user.first_name)
+        user.last_name = request.POST.get('last_name', user.last_name)
+        user.email = request.POST.get('email', user.email)
+        user.phone_number = request.POST.get('phone', user.phone_number)  # This is your custom field
 
-    return render(request, 'main/update_profile.html', {'form': form})
-    
-@login_required
-def enroll_in_course(request, course_id):
-    course = get_object_or_404(Course, id=course_id)
-    student = request.user.student
+        # You can add any other fields you want to update here (e.g., student_id)
+        
+        try:
+            user.save()  # Save the updated user
+            messages.success(request, "Your profile has been updated!")  # Success message
+        except Exception as e:
+            messages.error(request, f"There was an error updating your profile: {e}")  # Error message
 
-    # Check if the course is already full
-    if course.enrolled_students.count() >= course.capacity:
-        messages.error(request, "This course is already full.")
-        return redirect('main:main_page')
+        return redirect('main:main_page')  # Redirect to the main page after updating
 
-    # Check if the student is already enrolled in the course
-    if course in student.enrolled_courses.all():
-        messages.warning(request, "You are already enrolled in this course.")
-        return redirect('main:main_page')
-
-    # Enroll the student in the course
-    course.enrolled_students.add(student)
-    messages.success(request, f"Successfully enrolled in {course.name}!")
-    return redirect('main:main_page')
+    return redirect('main:main_page')  # If not a POST request, just redirect
