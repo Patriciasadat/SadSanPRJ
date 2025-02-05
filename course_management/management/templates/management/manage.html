@@ -10,6 +10,19 @@
 <body>
 <img src="{% static 'icons/logo.png' %}" alt="Logo" class="logo">
 <h1>Manage Courses</h1>
+{% if messages %}
+    <div class="container">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} fade show" role="alert">
+                {{ message }}
+                <!-- Dismiss Button -->
+                <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
 
 <!-- Home Button (Left) and Add New Course Button (Right) -->
 <div class="icon-container" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
