@@ -1,9 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView
 from .forms import CustomUserForm
-from django.urls import path
-
 from django.contrib import messages
 
 def register(request):
@@ -12,17 +10,11 @@ def register(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Registration successful! You can now log in.")
-            return redirect("login")
+            return redirect("registration:login")  # Correct redirect
     else:
         form = CustomUserForm()
     
     return render(request, "register.html", {"form": form})
 
-
 class CustomLoginView(LoginView):
-    template_name = "registration/login.html"
-
-
-urlpatterns = [
-    path("login/", CustomLoginView.as_view(), name="login")
-]
+    template_name = "registration/login.html"  # Correct path to the template
