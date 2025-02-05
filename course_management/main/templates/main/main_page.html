@@ -4,45 +4,253 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main Page</title>
-    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <script>
+        function openEnrollModal(courseCode, courseName, courseUnits, courseDays, courseTime) {
+            if (!courseCode) {
+                alert("Invalid course code. Please try again.");
+                return;
+            }
+            document.getElementById("modal-course-name").innerText = courseName;
+            document.getElementById("modal-course-units").innerText = courseUnits;
+            document.getElementById("modal-course-days").innerText = courseDays;
+            document.getElementById("modal-course-time").innerText = courseTime;
+            document.getElementById("enroll-form").action = "{% url 'main:enroll_in_course' 'dummy' %}".replace('dummy', courseCode);
+            var enrollModal = new bootstrap.Modal(document.getElementById('enroll-modal'));
+            enrollModal.show();
+        }
+
+        function openDropModal(courseCode, courseName) {
+            document.getElementById("drop-course-name").innerText = courseName;
+            document.getElementById("drop-course-form").action = "{% url 'main:drop_course' 'dummy' %}".replace('dummy', courseCode);
+            var dropModal = new bootstrap.Modal(document.getElementById('drop-course-modal'));
+            dropModal.show();
+        }
+
+        function openProfileModal() {
+            var profileModal = new bootstrap.Modal(document.getElementById('profile-modal'));
+            profileModal.show();
+        }
+    </script>
+    <style>
+        /* Style changes for positioning the icons */
+        .top-icons {
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+            z-index: 10;
+        }
+        .back-button {
+            position: absolute;
+            left: 10px;
+        }
+        .profile-button {
+            position: absolute;
+            right: 40px;
+            
+        }
+        .search-bar {
+            max-width: 300px;
+            margin: 20px auto;
+            display: block;
+        }
+    </style>
 </head>
 <body>
+<img src="{% static 'icons/logo.png' %}" alt="Logo" class="logo">
 
+<!-- Home Button (Left) and Edit Profile Button (Right) -->
+<div class="top-icons">
+    <!-- Back to Home Button -->
+    <icon1 role="button" tabindex="0" class="back-button" onclick="location.href='{% url 'home' %}'">
+        <img src="{% static 'icons/Back.png' %}" alt="Home" width="20" height="20">
+    </icon1>
+
+    <!-- Edit Profile Button -->
+    <icon1 role="button" tabindex="0" class="profile-button" onclick="openProfileModal()">
+        <img src="{% static 'icons/edit.png' %}" alt="Update Profile" width="24" height="24">
+    </icon1>
+</div>
+
+<h1>Welcome, {{ request.user.first_name }}!</h1>
 <h1>Available Courses</h1>
 
-<!-- Search Form -->
-<form method="get" action="{% url 'main:main_page' %}">
-    <input type="text" name="search" placeholder="Search courses..." value="{{ search_query }}">
-    <button type="submit">Search</button>
+
+{% if messages %}
+    <div class="container">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} fade show" role="alert">
+                {{ message }}
+                <!-- Dismiss Button -->
+                <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<!-- Search Bar Positioned Below the Header -->
+<form method="get" action="{% url 'main:main_page' %}" class="mb-3 search-bar">
+    <input type="text" name="search" placeholder="Search..." value="{{ search_query }}" class="form-control d-inline-block w-auto">
+    <button type="submit" class="icon1" role="button" tabindex="0">
+        <img class="search-icon" src="{% static 'icons/Search.png' %}" alt="Search" width="16" height="16">
+    </button>
 </form>
 
-<!-- Course List -->
-<ul>
-    {% for course in courses %}
-    <li>
-        <h3>{{ course.name }} ({{ course.code }})</h3>
-        <p>Department: {{ course.department }}</p>
-        <p>Instructor: {{ course.instructor }}</p>
-        <p>Enrollment: {{ course.enrolled_students_count }} / {{ course.capacity }}</p>
-        <p>Status: {% if course.is_full %}Full{% else %}Available{% endif %}</p>
-        <a href="{% url 'main:enroll_in_course' course.id %}">Enroll</a>
-    </li>
-    {% endfor %}
-</ul>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Code</th>
+            <th>Department</th>
+            <th>Instructor</th>
+            <th>Units</th>
+            <th>Days</th>
+            <th>Time</th>
+            <th>Exam</th>
+            <th>Enrollment</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for course in courses %}
+        <tr>
+            <td>{{ course.name }}</td>
+            <td>{{ course.code }}</td>
+            <td>{{ course.department }}</td>
+            <td>{{ course.instructor }}</td>
+            <td>{{ course.units }}</td>
+            <td>{{ course.days }}</td>
+            <td>{{ course.start_time }} - {{ course.end_time }}</td>
+            <td>{{ course.exam_datetime }}</td>
+            <td>
+                <div class="progress" style="height: 20px;">
+                    <div class="progress-bar" role="progressbar" 
+                        style="width:{{ course.percentage }}%; background-color: {{ course.color }};"
+                        aria-valuenow="{{ course.enrolled_students.count }}" 
+                        aria-valuemin="0" aria-valuemax="{{ course.capacity }}">
+                    </div>
+                    <div class="progress-text">
+                        {{ course.enrolled_students.count }}/{{ course.capacity }}
+                    </div>
+                </div>
+            </td>
+            <td>{% if course.remaining_capacity == 0 %}Full{% else %}Available{% endif %}</td>
+            <td>
+                {% if course in request.user.enrolled_courses.all %}
+                    <icon1 role="button" tabindex="0" onclick="openDropModal('{{ course.code }}', '{{ course.name }}')">
+                        <img src="{% static 'icons/delete.png' %}" alt="Drop Course" width="20" height="20">
+                    </icon1>
+                {% else %}
+                    <icon1 role="button" tabindex="0" onclick="openEnrollModal('{{ course.code }}', '{{ course.name }}', '{{ course.units }}', '{{ course.days }}', '{{ course.start_time }} - {{ course.end_time }}')">
+                        <img src="{% static 'icons/plus.png' %}" alt="Enroll" width="20" height="20">
+                    </icon1>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="11" class="text-center">No courses available.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
 
-<!-- Enrolled Courses -->
-<h2>Your Enrolled Courses</h2>
-<ul>
-    {% for course in enrolled_courses %}
-    <li>
-        <h3>{{ course.name }} ({{ course.code }})</h3>
-        <p>Department: {{ course.department }}</p>
-        <p>Instructor: {{ course.instructor }}</p>
-    </li>
-    {% empty %}
-    <p>You are not enrolled in any courses.</p>
-    {% endfor %}
-</ul>
+<!-- Profile Update Modal -->
+<div id="profile-modal" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'main:update_profile' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="first_name" class="form-label">First Name</label>
+                        <input type="text" id="first_name" name="first_name" class="form-control" value="{{ request.user.first_name }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="last_name" class="form-label">Last Name</label>
+                        <input type="text" id="last_name" name="last_name" class="form-control" value="{{ request.user.last_name }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" id="email" name="email" class="form-control" value="{{ request.user.email }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Phone</label>
+                        <input type="text" id="phone" name="phone" class="form-control" value="{{ request.user.phone_number }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Drop Course Modal -->
+<div id="drop-course-modal" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Drop Course: <span id="drop-course-name"></span>?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to drop this course? This action cannot be undone.</p>
+                <form id="drop-course-form" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Confirm Drop</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Enroll Course Modal -->
+<div id="enroll-modal" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Enroll in <span id="modal-course-name"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Course Units: <span id="modal-course-units"></span></p>
+                <p>Days: <span id="modal-course-days"></span></p>
+                <p>Time: <span id="modal-course-time"></span></p>
+                <form id="enroll-form" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success">Enroll Now</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include Bootstrap JS and jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Sadra & Sana Hosseini. All rights reserved.</p>
+            <p>Check out our Telegram :
+                <a href="https://t.me/Sadrasyx" target="_blank">Sadra</a> | 
+                <a href="https://t.me/PriPatricia" target="_blank">Sana</a> |
+            </p>
+            <!-- Add logo to the right -->
+            <img src="{% static 'icons/logo.png' %}" alt="Company Logo" class="footer-logo">
+        </div>
+    </footer>
 
 </body>
 </html>
