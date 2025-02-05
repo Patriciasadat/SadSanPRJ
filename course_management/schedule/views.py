@@ -1,26 +1,32 @@
 from django.shortcuts import render
-from management.models import Course  # Adjust the import according to where it's defined
+from django.contrib.auth.decorators import login_required
+from management.models import Course
+from datetime import datetime
 
+@login_required
 def weekly_schedule(request):
-    if not request.user.is_authenticated:
-        return render(request, 'schedule.html', {'schedule': {}})
+    # Get all courses the logged-in user is enrolled in
+    user_courses = request.user.enrolled_courses.all()
 
-    # Get the courses for the logged-in student
-    student_courses = request.user.courses.all()  # Using the related_name from CustomUser model
+    # Dictionary to store schedule by day
+    schedule = {day: [] for day in ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}
 
-    # Create an empty schedule dictionary
-    schedule = {}
+    for course in user_courses:
+        # Ensure 'days' is correctly formatted and split it into a list
+        course_days = [day.strip() for day in course.days.split(",")] if course.days else []
+        
+        for day in course_days:
+            if day in schedule:  # Only add valid days
+                schedule[day].append({
+                    'course': course.name,
+                    'code': course.code,
+                    'instructor': course.instructor,
+                    'start_time': course.start_time.strftime('%H:%M') if course.start_time else 'TBA',
+                    'end_time': course.end_time.strftime('%H:%M') if course.end_time else 'TBA',
+                })
 
-    # Populate the schedule dictionary based on the courses the student is enrolled in
-    for course in student_courses:
-        for day in course.days.split(", "):  # Assuming days are stored like "Mon, Wed, Fri"
-            if day not in schedule:
-                schedule[day] = []
-            schedule[day].append(course)
+    # Sort courses by start_time within each day
+    for day, courses in schedule.items():
+        courses.sort(key=lambda x: datetime.strptime(x['start_time'], '%H:%M') if x['start_time'] != 'TBA' else datetime.max)
 
-    # Sort the days of the week to display them in a consistent order
-    days_of_week = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-    sorted_schedule = {day: schedule.get(day, []) for day in days_of_week}
-
-    # Render the weekly schedule template
-    return render(request, 'schedule.html', {'schedule': sorted_schedule})
+    return render(request, 'schedule.html', {'schedule': schedule})
