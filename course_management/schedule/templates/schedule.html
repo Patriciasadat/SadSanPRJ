@@ -4,142 +4,167 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weekly Schedule</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <style>
     /* Responsive Design */
-@media (max-width: 768px) {
-    body {
-        padding: 10px;
+    @media (max-width: 768px) {
+        body {
+            padding: 10px;
+        }
+
+        h1 {
+            font-size: 20px;
+            text-align: center;
+        }
+
+        table {
+            font-size: 14px;
+        }
     }
 
-    h1 {
-        font-size: 20px;
+    /* General Styles */
+    body {
+        font-family: 'Georgia', serif, Arial, sans-serif;
+        background-color: #f1f5f9;
+        margin: 0;
+        padding: 30px;
+        color: #333;
         text-align: center;
     }
 
-    .day {
-        padding: 15px;
-        margin: 8px 0;
+    h1 {
+        font-size: 28px;
+        margin-bottom: 20px;
     }
-}
 
-/* General Styles */
-body {
-    font-family: 'Georgia', serif, Arial, sans-serif; /* Consistent font with homepage */
-    background-color: #f1f5f9;
-    margin: 0;
-    padding: 30px;
-    color: #333;
-    text-align: center;
-}
+    /* Schedule Container */
+    .schedule {
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+        border-collapse: collapse;
+    }
 
-h1 {
-    font-size: 28px;
-    margin-bottom: 20px;
-}
+    
 
-/* Schedule Container */
-.schedule {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-}
+    /* Course List Styles */
+    .course {
+        font-size: 14px;
+        color: #555;
+        background-color: #fafafa;
+        padding: 10px;
+        border-left: 4px solid #37b7c3;
+        border-radius: 5px;
+        margin-bottom: 5px;
+    }
 
-/* Day Card Styles */
-.day {
-    background: #ffffff;
-    padding: 20px;
-    margin: 10px 0;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 800px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+    /* Back to Home Button */
+    .btn-home {
+        background-color: #37B7C3;
+        color: #fff;
+        text-decoration: none;
+        display: inline-block;
+        padding: 12px 25px;
+        border-radius: 6px;
+        font-size: 16px;
+        text-align: center;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        margin-top: 20px;
+    }
 
-.day:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-}
+    .btn-home:hover {
+        background-color: #088395;
+        transform: scale(1.05);
+    }
 
-h2 {
-    color: #4a4a4a;
-    font-size: 24px;
-    margin-bottom: 15px;
-    font-weight: 600;
-}
+    .button-container {
+        display: flex;
+        justify-content: flex-start; /* Align button to the left */
+        margin-bottom: 20px;
+    }
 
-/* Course List */
-ul {
-    list-style-type: none;
-    padding: 0;
-}
+    /* Icon styles */
+    .icon1 {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: none;
+        border: none;
+        padding: 8px;
+        cursor: pointer;
+        transition: transform 0.2s ease-in-out;
+        user-select: none;
+    }
 
-li {
-    font-size: 16px;
-    color: #555;
-    margin: 8px 0;
-    padding: 5px 10px;
-    border-left: 4px solid #37b7c3;
-    background-color: #fafafa;
-    border-radius: 5px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
+    .icon1 img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
 
-li:hover {
-    background-color: #e5f6f7;
-    transform: translateX(5px);
-}
+    .icon1:hover {
+        transform: scale(1.15);
+    }
 
-/* Back to Home Button */
-.btn-home {
-    background-color: #37B7C3;
-    color: #fff;
-    text-decoration: none;
-    display: inline-block;
-    padding: 12px 25px;
-    border-radius: 6px;
-    font-size: 16px;
-    text-align: center;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    margin-top: 20px;
-}
-
-.btn-home:hover {
-    background-color: #088395;
-    transform: scale(1.05);
-}
-
-.button-container {
-    display: flex;
-    justify-content: center; /* Centers the button */
-    margin-bottom: 20px; /* Adds space between button and schedule */
-}
-
+    .icon1:active {
+        transform: scale(0.95);
+    }
     </style>
-    
-    
 </head>
 
 <body>
+    <img src="{% static 'icons/logo.png' %}" alt="Logo" class="logo">
     <h1>Your Weekly Schedule</h1>
 
-    <!-- Button Wrapper for Better Layout -->
     <div class="button-container">
-        <a href="{% url 'home' %}" class="btn-home">Back to Home</a>
+        <div class="icon1" role="button" tabindex="0" onclick="location.href='{% url 'home' %}'">
+            <img src="{% static 'icons/Back.png' %}" alt="Home" width="20" height="20">
+        </div>
     </div>
 
     <div class="schedule">
-        {% for day, courses in schedule.items %}
-            <div class="day">
-                <h2>{{ day }}</h2>
-                <ul>
-                    {% for course in courses %}
-                        <li>{{ course.name }}: {{ course.start_time }} - {{ course.end_time }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endfor %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Day</th>
+                    <th>Course Name</th>
+                    <th>Instructor</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for day, courses in schedule.items %}
+                    {% if courses %}
+                        {% for course in courses %}
+                            <tr>
+                                <td>{{ day }}</td>
+                                <td class="course">{{ course.course }} ({{ course.code }})</td>
+                                <td>{{ course.instructor }}</td>
+                                <td>{{ course.start_time }} - {{ course.end_time }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="4">{{ day }}: No classes</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Sadra & Sana Hosseini. All rights reserved.</p>
+            <p>Check out our Telegram :
+                <a href="https://t.me/Sadrasyx" target="_blank">Sadra</a> | 
+                <a href="https://t.me/PriPatricia" target="_blank">Sana</a>
+            </p>
+            <img src="{% static 'icons/logo.png' %}" alt="Company Logo" class="footer-logo">
+        </div>
+    </footer>
 </body>
 </html>
