@@ -1,13 +1,13 @@
-# main/forms.py
 from django import forms
-from .models import Student
+from .models import CustomUser
 
 class StudentProfileForm(forms.ModelForm):
     class Meta:
-        model = Student
-        fields = ['date_of_birth', 'phone_number', 'address']
+        model = CustomUser  # Changed from Student to CustomUser
+        fields = ['phone_number', 'national_id', 'student_id', 'admission_year']
         widgets = {
-            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
             'phone_number': forms.TextInput(attrs={'placeholder': 'Enter your phone number'}),
-            'address': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Enter your address'}),
+            'national_id': forms.TextInput(attrs={'placeholder': 'Enter your national ID'}),
+            'student_id': forms.TextInput(attrs={'placeholder': 'Enter your student ID'}),
+            'admission_year': forms.TextInput(attrs={'readonly': 'readonly'}),  # Set as readonly if auto-generated
         }
