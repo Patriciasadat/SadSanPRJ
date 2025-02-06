@@ -118,29 +118,37 @@
             </td>
         </tr>
 
-        <!-- Modal for Viewing Enrolled Students -->
-        <div class="modal fade" id="studentsModal{{ course.id }}" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Enrolled Students for {{ course.name }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <ul>
-                            {% for student in course.enrolled_students.all %}
-                                <li>{{ student.username }} ({{ student.email }})</li>
-                            {% empty %}
-                                <li>No students enrolled.</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <!-- Modal for Viewing Enrolled Students -->
+            <div class="modal fade" id="studentsModal{{ course.id }}" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Enrolled Students for {{ course.name }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <ul>
+                                {% for student in course.enrolled_students.all %}
+                                    <li>{{ student.username }} ({{ student.email }})</li>
+                                {% empty %}
+                                    <li>No students enrolled.</li>
+                                {% endfor %}
+                            </ul>
+
+                            <!-- Enroll Student Form -->
+                            <form method="POST" action="{% url 'management:enroll_student_admin' course.id %}">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="student_id" class="form-label">Enter Student ID</label>
+                                    <input type="text" class="form-control" name="student_id" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Enroll Student</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+
 
         <!-- Edit Course Modal (PATCH Method) -->
         <div class="modal fade" id="editModal{{ course.id }}" tabindex="-1">
