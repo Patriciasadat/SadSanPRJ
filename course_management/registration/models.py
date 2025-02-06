@@ -32,10 +32,17 @@ class CustomUser(AbstractUser):
             if self.student_id:
                 if len(self.student_id) == 9:
                     self.admission_year = f"1{self.student_id[:3]}"
+                    self.username = self.student_id
                 elif len(self.student_id) == 8:
                     self.admission_year = f"13{self.student_id[0]}"
+                    self.username = self.student_id
                 
         super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        """Ensure student is removed from all enrolled courses before deletion."""
+        self.courses.clear()  # Remove all course enrollments
+        super().delete(*args, **kwargs)  # Call the parent delete method
 
     def __str__(self):
         return self.username
