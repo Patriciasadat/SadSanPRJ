@@ -67,6 +67,14 @@ def enroll_in_course(request, course_code):
         messages.error(request, "This course is already full.")
         return redirect('main:main_page')
 
+    # Calculate the total enrolled units
+    total_units = sum(enrolled_course.units for enrolled_course in user.enrolled_courses.all())
+
+    # Check if adding this course would exceed max_units
+    if total_units + course.units > user.max_units:
+        messages.error(request, f"Enrolling in {course.name} would exceed your maximum allowed units ({user.max_units}).")
+        return redirect('main:main_page')
+
     # Check if already enrolled
     if course in user.enrolled_courses.all():
         messages.warning(request, "You are already enrolled in this course.")
@@ -75,28 +83,26 @@ def enroll_in_course(request, course_code):
     # Check for overlapping courses or exams
     conflicting_courses = user.enrolled_courses.all()
     for enrolled_course in conflicting_courses:
-        # Check if the courses overlap in time
         if is_course_time_conflict(course, enrolled_course):
             messages.error(request, f"You cannot enroll in {course.name} because it conflicts with {enrolled_course.name}.")
             return redirect('main:main_page')
-        
-        # Check if the exams overlap
+
         if is_exam_conflict(course, enrolled_course):
             messages.error(request, f"You cannot enroll in {course.name} because its exam conflicts with {enrolled_course.name}'s exam.")
             return redirect('main:main_page')
 
-    # Enroll the user in the course and add the course to user's enrolled courses
+    # Enroll the user in the course
     course.enrolled_students.add(user)
-    user.enrolled_courses.add(course)  # This will add the course to the user's courses as well
+    user.enrolled_courses.add(course)
 
-    # Save changes to both user and course
+    # Save changes
     user.save()
     course.save()
 
     messages.success(request, f"Successfully enrolled in {course.name}!")
 
-    # Redirect back to the main page with the search query intact (so it maintains state)
-    search_query = request.GET.get('search', '')  # Get the current search query
+    # Redirect back to the main page while preserving the search query
+    search_query = request.GET.get('search', '')
     return redirect(f'{reverse("main:main_page")}?search={search_query}')
 
 
