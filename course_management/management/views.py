@@ -4,7 +4,8 @@ from django.contrib import messages
 from .models import Course
 from .forms import CourseForm
 from django.db.models import Q
-
+from datetime import datetime, timedelta
+from registration.models import CustomUser 
 
 @login_required
 def manage_courses(request):
@@ -31,12 +32,12 @@ def manage_courses(request):
     for course in courses:
         enrolled_count = course.enrolled_students.count()
         percentage = (enrolled_count / course.capacity) * 100 if course.capacity else 0  # Avoid division by zero
-        if enrolled_count > course.capacity/2:
-            course.color = 'yellow'
-        elif enrolled_count <= course.capacity / 2:
-            course.color = 'green'
-        elif enrolled_count == course.capacity:
+        if enrolled_count == course.capacity:
             course.color = 'red'
+        elif enrolled_count > course.capacity:
+            course.color = 'yellow'
+        else:
+            course.color = 'green'
         
         course.percentage = percentage
     
@@ -119,3 +120,82 @@ def view_students(request, course_id):
     students = course.enrolled_students.all()
 
     return render(request, 'management/view_students.html', {'course': course, 'students': students})
+
+
+
+
+@login_required
+def enroll_student_admin(request, course_id):
+    """Enroll a student in a course using their student ID (admin feature)."""
+    if request.method == "POST":
+        student_id = request.POST.get("student_id")
+        course = get_object_or_404(Course, id=course_id)
+
+        # Ensure the user is an admin
+        if not request.user.is_admin:
+            messages.error(request, "You do not have permission to enroll students.")
+            return redirect("management:manage_courses")
+
+        # Retrieve the student based on student_id
+        student = CustomUser.objects.filter(student_id=student_id, is_admin=False).first()
+
+        if not student:
+            messages.error(request, "No student found with this ID.")
+            return redirect("management:manage_courses")
+
+        # Check if the course is full
+        if course.enrolled_students.count() >= course.capacity:
+            messages.error(request, "This course is already full.")
+            return redirect("management:manage_courses")
+
+        # Check if student is already enrolled
+        if course in student.enrolled_courses.all():
+            messages.warning(request, "This student is already enrolled in this course.")
+            return redirect("management:manage_courses")
+
+        # Check for time conflicts with already enrolled courses
+        for enrolled_course in student.enrolled_courses.all():
+            if is_course_time_conflict(course, enrolled_course):
+                messages.error(
+                    request,
+                    f"Cannot enroll {student.username} in {course.name} due to a time conflict with {enrolled_course.name}."
+                )
+                return redirect("management:manage_courses")
+
+            if is_exam_conflict(course, enrolled_course):
+                messages.error(
+                    request,
+                    f"Cannot enroll {student.username} in {course.name} due to an exam conflict with {enrolled_course.name}."
+                )
+                return redirect("management:manage_courses")
+
+        # Add the student to the course
+        course.enrolled_students.add(student)
+
+        messages.success(request, f"{student.username} has been enrolled in {course.name}.")
+        return redirect("management:manage_courses")
+
+    return redirect("management:manage_courses")
+
+
+
+def is_course_time_conflict(course1, course2):
+    """ Checks if the class times of two courses overlap """
+    # Ensure courses are on the same days
+    if not any(day in course1.days.split(", ") for day in course2.days.split(", ")):
+        return False
+
+    # Convert times to datetime for comparison
+    start1 = datetime.combine(datetime.min, course1.start_time)
+    end1 = start1 + timedelta(hours=1, minutes=20)  # Default duration of 1 hour 20 minutes
+    start2 = datetime.combine(datetime.min, course2.start_time)
+    end2 = start2 + timedelta(hours=1, minutes=20)
+
+    # Check for overlap
+    return (start1 < end2 and start2 < end1)
+
+
+def is_exam_conflict(course1, course2):
+    """ Checks if the final exams of two courses overlap """
+    # Compare exam datetimes directly without make_aware
+    return course1.exam_datetime == course2.exam_datetime
