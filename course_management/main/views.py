@@ -32,7 +32,7 @@ def main_page(request):
         
         if enrolled_count == course.capacity:
             course.color = 'red'
-        elif enrolled_count > course.capacity:
+        elif enrolled_count > course.capacity/2:
             course.color = 'yellow'
         else:
             course.color = 'green'
