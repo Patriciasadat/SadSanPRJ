@@ -34,7 +34,7 @@ def manage_courses(request):
         percentage = (enrolled_count / course.capacity) * 100 if course.capacity else 0  # Avoid division by zero
         if enrolled_count == course.capacity:
             course.color = 'red'
-        elif enrolled_count > course.capacity/2:
+        elif enrolled_count >= course.capacity/2:
             course.color = 'yellow'
         else:
             course.color = 'green'
